@@ -1,0 +1,13 @@
+BasedOnStyle: Google
+IndentWidth: 2
+ColumnLimit: 120
+Language: Cpp
+
+# Use C++ style pointer alignments.
+DerivePointerAlignment: false
+PointerAlignment: Left
+
+# Less-compact, but more Git friendly style options.
+AlignAfterOpenBracket: AlwaysBreak
+BinPackArguments: false
+BinPackParameters: false

@@ -1,0 +1,12 @@
+{
+  "C_Cpp.vcpkg.enabled": true,
+  "cmake.sourceDirectory": "${workspaceFolder}",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "xaver.clang-format",
+  "editor.rulers": [
+    120
+  ],
+  "cmake.configureSettings": {
+    //"VCPKG_TARGET_TRIPLET": "x64-windows-static",
+  },
+}
