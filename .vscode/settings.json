@@ -6,7 +6,25 @@
   "editor.rulers": [
     120
   ],
+  "cmake.configureArgs": [
+    "-Wdev",
+    "-Wdeprecated",
+    //"--warn-uninitialized",
+  ],
   "cmake.configureSettings": {
+    "CMAKE_TOOLCHAIN_FILE": "${workspaceFolder}/vcpkg/scripts/buildsystems/vcpkg.cmake",
     //"VCPKG_TARGET_TRIPLET": "x64-windows-static",
   },
+  "cmake.buildEnvironment": {
+    //"VERBOSE": "1",
+  },
+  "terminal.integrated.env.windows": {
+    "VCPKG_ROOT": "${workspaceFolder}/vcpkg",
+  },
+  "terminal.integrated.env.osx": {
+    "VCPKG_ROOT": "${workspaceFolder}/vcpkg",
+  },
+  "terminal.integrated.env.linux": {
+    "VCPKG_ROOT": "${workspaceFolder}/vcpkg",
+  }
 }
