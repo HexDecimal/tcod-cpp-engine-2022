@@ -16,6 +16,11 @@ file(GLOB_RECURSE SOURCE_FILES
 )
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
+# Enforce UTF-8 encoding on MSVC.
+if (MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
+endif()
+
 # Enable warnings recommended for new projects.
 if (MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /W4)
