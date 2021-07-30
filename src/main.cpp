@@ -10,6 +10,7 @@ int main(int argc, char** argv) {
   params.argv = argv;
   params.vsync = true;
   params.sdl_window_flags = SDL_WINDOW_RESIZABLE;
+  params.window_title = "Libtcod Template Project";
 
   tcod::ConsolePtr console = tcod::new_console(80, 25);
   params.columns = console->w;
