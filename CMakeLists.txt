@@ -11,10 +11,15 @@ project(
     LANGUAGES C CXX
 )
 
-file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
+file(
+    GLOB_RECURSE SOURCE_FILES
+    CONFIGURE_DEPENDS  # Automatically reconfigure if source files are added/removed.
     ${PROJECT_SOURCE_DIR}/src/*.cpp
 )
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+
+# Ensure the C++17 standard is available.
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 # Enforce UTF-8 encoding on MSVC.
 if (MSVC)
