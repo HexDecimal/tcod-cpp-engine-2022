@@ -15,3 +15,14 @@
   * When CMake Tools asks for a project select `libtcod-vcpkg-template`.
 * The project will now build and run with F5.
   You should edit the `CMakeLists.txt` script as needed to expand your project.
+
+## Configuring submodules
+
+After you run `git submodule update --init` you can setup the submodules by going into their initilzed submodule directories and checking out the desired commits.
+See the [Git Documentation on Submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
+
+To use the development versions of libtcod: change to the libtcod subdirectory and checkout the `develop` branch with `git checkout develop`.
+After that you can pull any updates to libtcod with `git pull`.
+
+The Vcpkg submodule is updated in the same way.
+Checkout and pull the `master` branch to get the most recent ports.
