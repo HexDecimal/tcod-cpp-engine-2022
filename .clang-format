@@ -11,3 +11,4 @@ PointerAlignment: Left
 AlignAfterOpenBracket: AlwaysBreak
 BinPackArguments: false
 BinPackParameters: false
+AlignTrailingComments: false
