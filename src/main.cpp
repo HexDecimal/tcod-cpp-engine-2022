@@ -5,10 +5,11 @@
 #include <cstdlib>
 
 int main(int argc, char** argv) {
-  TCOD_ContextParams params = {TCOD_COMPILEDVERSION};
+  TCOD_ContextParams params{};
+  params.tcod_version = TCOD_COMPILEDVERSION;
   params.argc = argc;
   params.argv = argv;
-  params.vsync = true;
+  params.vsync = 1;
   params.sdl_window_flags = SDL_WINDOW_RESIZABLE;
   params.window_title = "Libtcod Template Project";
 
