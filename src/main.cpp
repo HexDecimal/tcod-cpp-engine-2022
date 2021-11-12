@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
   // Game loop.
   while (true) {
     // Rendering.
-    TCOD_console_clear(console.get());
+    console.clear();
     tcod::print(console, {0, 0}, "Hello World", TCOD_white, std::nullopt);
     context->present(console);
 
