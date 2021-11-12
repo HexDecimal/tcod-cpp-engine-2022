@@ -13,18 +13,17 @@ int main(int argc, char** argv) {
   params.sdl_window_flags = SDL_WINDOW_RESIZABLE;
   params.window_title = "Libtcod Template Project";
 
-  tcod::ConsolePtr console = tcod::new_console(80, 25);
-  params.columns = console->w;
-  params.rows = console->h;
+  auto console = tcod::Console{80, 25};
+  params.console = console.get();
 
-  tcod::ContextPtr context = tcod::new_context(params);
+  auto context = tcod::new_context(params);
 
   // Game loop.
   while (true) {
     // Rendering.
     TCOD_console_clear(console.get());
-    tcod::print(*console, 0, 0, "Hello World", &TCOD_white, nullptr, TCOD_BKGND_SET, TCOD_LEFT);
-    context->present(*console);
+    tcod::print(console, {0, 0}, "Hello World", TCOD_white, std::nullopt);
+    context->present(console);
 
     // Handle input.
     SDL_Event event;
