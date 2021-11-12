@@ -5,7 +5,7 @@
 #include <cstdlib>
 
 int main(int argc, char** argv) {
-  TCOD_ContextParams params{};
+  auto params = TCOD_ContextParams{};
   params.tcod_version = TCOD_COMPILEDVERSION;
   params.argc = argc;
   params.argv = argv;
