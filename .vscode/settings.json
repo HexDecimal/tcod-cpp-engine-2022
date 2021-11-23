@@ -26,5 +26,11 @@
   },
   "terminal.integrated.env.linux": {
     "VCPKG_ROOT": "${workspaceFolder}/vcpkg",
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
   }
 }
