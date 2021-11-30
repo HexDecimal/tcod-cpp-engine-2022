@@ -18,15 +18,6 @@
   "cmake.buildEnvironment": {
     //"VERBOSE": "1",
   },
-  "terminal.integrated.env.windows": {
-    "VCPKG_ROOT": "${workspaceFolder}/vcpkg",
-  },
-  "terminal.integrated.env.osx": {
-    "VCPKG_ROOT": "${workspaceFolder}/vcpkg",
-  },
-  "terminal.integrated.env.linux": {
-    "VCPKG_ROOT": "${workspaceFolder}/vcpkg",
-  },
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
   },
