@@ -9,6 +9,7 @@ int main(int argc, char** argv) {
   params.tcod_version = TCOD_COMPILEDVERSION;
   params.argc = argc;
   params.argv = argv;
+  params.renderer_type = TCOD_RENDERER_SDL2;
   params.vsync = 1;
   params.sdl_window_flags = SDL_WINDOW_RESIZABLE;
   params.window_title = "Libtcod Template Project";
