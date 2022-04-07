@@ -35,7 +35,7 @@ else()
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
 endif()
 
-set(BUILD_SHARED_LIBS ON)  # Builds libtcod has a shared library.
+set(BUILD_SHARED_LIBS ${WIN32})  # Builds libtcod has a shared library.
 add_subdirectory("libtcod")  # This will error if you haven't initialized libtcod the submodule!
 
 find_package(SDL2 CONFIG REQUIRED)
