@@ -1,24 +1,25 @@
 {
-    "version": "0.2",
-    "ignorePaths": [],
-    "dictionaryDefinitions": [],
-    "dictionaries": [],
-    "words": [
-        "BKGND",
-        "buildsystems",
-        "choosealicense",
-        "CMAKE",
-        "libtcod",
-        "lodepng",
-        "MSVC",
-        "tcod",
-        "vcpkg",
-        "vsync",
-        "Wextra"
-    ],
-    "ignoreWords": [],
-    "import": [],
-    "enableFiletypes": [
-        "cmake"
-    ]
+  "version": "0.2",
+  "ignorePaths": [],
+  "dictionaryDefinitions": [],
+  "dictionaries": [],
+  "words": [
+    "BKGND",
+    "buildsystems",
+    "choosealicense",
+    "CMAKE",
+    "dejavu",
+    "libtcod",
+    "lodepng",
+    "MSVC",
+    "tcod",
+    "vcpkg",
+    "vsync",
+    "Wextra"
+  ],
+  "ignoreWords": [],
+  "import": [],
+  "enableFiletypes": [
+    "cmake"
+  ]
 }
