@@ -9,7 +9,7 @@ defaults:
     shell: bash
 
 env:
-  project-name: roguelike-tutorial
+  project-name: libtcod-vcpkg-template
 
 jobs:
   build:

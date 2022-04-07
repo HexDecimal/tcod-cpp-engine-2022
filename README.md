@@ -16,6 +16,8 @@ If you do not want to use this directory then you can modify which files are col
 
 A workflow exists at [.github/workflows/cmake.yml](.github/workflows/cmake.yml) which automatically compiles the program for Windows, macOS, and Ubuntu Linux.
 The workflow simply invokes CMake directly, since this setup does not depend on a specific IDE to work.
+Actions which pass without fail will provide archived executables to test with, these are temporary and are downloaded from the passing action under *automated-builds*.
+To permanently publish these builds you can push an annotated tag named after the version of the build, such as `1.0.0` or `2000.12.30`.
 
 ## How to setup
 
@@ -24,7 +26,7 @@ The workflow simply invokes CMake directly, since this setup does not depend on 
     Make sure you install the C++ compiler tools from [Visual Studio Community](https://visualstudio.microsoft.com/vs/community/),
     install the latest [CMake](https://cmake.org/download/),
     and install [Visual Studio Code](https://code.visualstudio.com/download).
-* [Create a new repository from ths template](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/creating-a-repository-from-a-template#creating-a-repository-from-a-template).  **You do not use the GitHub fork button unless you're contributing to this template.**
+* [Create a new repository from ths template](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/creating-a-repository-from-a-template#creating-a-repository-from-a-template).  **You do not use the GitHub fork button unless you're contributing.**
 * [Clone your new repository](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository-from-github/cloning-a-repository).
 * Make sure to initialize the `vcpkg` and `libtcod` [submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules).  If either folder is empty then the build process will fail.
   * The command to do this is: `git submodule update --init --recursive`
@@ -41,7 +43,7 @@ Now that you know the template works you'll want to take care the following:
 * Replace the license in [LICENSE.txt](LICENSE.txt) with your own, see [choosealicense.com](https://choosealicense.com/).
 * Modify [vcpkg.json](vcpkg.json) to include any libraries [from Vcpkg](https://vcpkg.info/) that you want to use such as the popular [fmt](https://fmt.dev/latest/index.html) library.
   You'll need to add these libraries to [CMakeLists.txt](CMakeLists.txt) to link them.
-* Change `libtcod-vcpkg-template` in [CMakeLists.txt](CMakeLists.txt) to the name of your game.
+* Change `libtcod-vcpkg-template` in [CMakeLists.txt](CMakeLists.txt) and [.github/workflows/cmake.yml](.github/workflows/cmake.yml) to the name of your game.
   You may want to edit other parts of the CMake script as well, such as the included source files.
 * Verify the style settings in [.clang-format](.clang-format) and [.editorconfig](.editorconfig).
 
