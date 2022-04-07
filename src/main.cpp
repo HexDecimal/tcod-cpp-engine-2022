@@ -14,7 +14,10 @@ int main(int argc, char** argv) {
   params.sdl_window_flags = SDL_WINDOW_RESIZABLE;
   params.window_title = "Libtcod Template Project";
 
-  auto console = tcod::Console{80, 25};
+  auto tileset = tcod::load_tilesheet("data/dejavu16x16_gs_tc.png", {32, 8}, tcod::CHARMAP_TCOD);
+  params.tileset = tileset.get();
+
+  auto console = tcod::Console{80, 40};
   params.console = console.get();
 
   auto context = tcod::new_context(params);
