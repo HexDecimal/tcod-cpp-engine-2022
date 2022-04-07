@@ -8,30 +8,38 @@ defaults:
   run:
     shell: bash
 
+env:
+  project-name: roguelike-tutorial
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         include:
           - os: windows-2019
             triplet: x64-windows
+            platform-name: windows.x64
           - os: macos-10.15
             triplet: x64-osx
+            platform-name: macos.x64
           - os: ubuntu-20.04
             triplet: x64-linux
+            platform-name: linux.x64
 
     env:
       BUILD_TYPE: Release
       # Indicates the CMake build directory where project files and binaries are being produced.
-      CMAKE_BUILD_DIR: ${{ github.workspace }}/build/
+      CMAKE_BUILD_DIR: ${{ github.workspace }}/build
       # Indicates the location of the vcpkg as a Git submodule of the project repository.
       VCPKG_ROOT: ${{ github.workspace }}/vcpkg
 
     steps:
-      - uses: actions/checkout@v2
+      # fetch-depth=0 and v1 are needed for 'git describe' to work correctly.
+      - uses: actions/checkout@v1
         with:
+          fetch-depth: 0
           submodules: true
       # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
       - uses: lukka/get-cmake@latest
@@ -40,7 +48,7 @@ jobs:
         with:
           # The first path is where vcpkg generates artifacts while consuming the vcpkg.json manifest file.
           # The second path is the location of vcpkg (it contains the vcpkg executable and data files).
-          # The other paths starting with '!' are exclusions: they contain termporary files generated during the build of the installed packages.
+          # The other paths starting with '!' are exclusions: they contain temporary files generated during the build of the installed packages.
           path: |
             ${{ env.CMAKE_BUILD_DIR }}/vcpkg_installed/
             ${{ env.VCPKG_ROOT }}
@@ -65,4 +73,46 @@ jobs:
           cmake --build "${{ env.CMAKE_BUILD_DIR }}"
       - name: Show contents of the build directory
         run: find "${{ env.CMAKE_BUILD_DIR }}"
-        shell: bash
+      # Sets env.archive-name, which is used to name the distribution folder and archive.
+      - name: Set archive name
+        run: |
+          ARCHIVE_NAME=${{ env.project-name }}-`git describe --always`-${{ matrix.platform-name }}
+          echo "Archive name set to: $ARCHIVE_NAME"
+          echo "archive-name=$ARCHIVE_NAME" >> $GITHUB_ENV
+      # Copy files from the CMake build and data directory into a new distribution folder.
+      - name: Package distribution
+        run: |
+          mkdir -p dist/${{ env.archive-name }}
+          cp "${{ env.CMAKE_BUILD_DIR }}/bin"/* dist/${{ env.archive-name }}
+          cp -R data dist/${{ env.archive-name }}
+      - name: Show contents of the dist directory
+        run: find dist/${{ env.archive-name }}
+      # Zip the distribution folder, using the platform appropriate tools.
+      - name: Tar files
+        if: runner.os != 'Windows'
+        working-directory: ./dist
+        run: |
+          tar --format=ustar -czvf "../${{ env.archive-name }}.tar.gz" */
+      - name: Archive files
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Compress-Archive dist/*/ ${{ env.archive-name }}.zip
+      # Upload archives as artifacts, these can be downloaded from the GitHub Actions page.
+      - name: "Upload Artifact"
+        uses: actions/upload-artifact@v2
+        with:
+          name: automated-builds
+          path: ${{ env.archive-name }}.*
+          retention-days: 7
+          if-no-files-found: error
+      # If a tag is pushed then a new archives are uploaded to GitHub Releases automatically.
+      - name: Upload release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.archive-name }}.*
+          file_glob: true
+          tag: ${{ github.ref }}
+          overwrite: true
