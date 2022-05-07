@@ -1,10 +1,10 @@
 
 #include <SDL.h>
-#include <libtcod.h>
 
 #include <cstdlib>
 #include <filesystem>
 #include <iostream>
+#include <libtcod.hpp>
 
 #if defined(_MSC_VER)
 #pragma warning(disable : 4297)  // Allow "throw" in main().  Letting the compiler handle termination.
