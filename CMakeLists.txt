@@ -35,6 +35,15 @@ else()
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
 endif()
 
+if (EMSCRIPTEN)
+    target_link_options(${PROJECT_NAME} PRIVATE "--preload-file data")
+    set_target_properties(
+        ${PROJECT_NAME}
+        PROPERTIES
+            SUFFIX ".html"
+    )
+endif()
+
 set(BUILD_SHARED_LIBS ${WIN32})  # Builds libtcod has a shared library.
 add_subdirectory("libtcod")  # This will error if you haven't initialized libtcod the submodule!
 
