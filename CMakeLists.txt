@@ -36,7 +36,7 @@ else()
 endif()
 
 if (EMSCRIPTEN)
-    target_link_options(${PROJECT_NAME} PRIVATE "--preload-file data")
+    target_link_options(${PROJECT_NAME} PRIVATE --preload-file "${CMAKE_CURRENT_SOURCE_DIR}/data@data")
     set_target_properties(
         ${PROJECT_NAME}
         PROPERTIES
