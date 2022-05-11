@@ -36,7 +36,9 @@ else()
 endif()
 
 if (EMSCRIPTEN)
+    # Attach data folder to Emscripten builds.
     target_link_options(${PROJECT_NAME} PRIVATE --preload-file "${CMAKE_CURRENT_SOURCE_DIR}/data@data")
+    # Set output to html to generate preview pages, otherwise you'll have to make your own html.
     set_target_properties(
         ${PROJECT_NAME}
         PROPERTIES

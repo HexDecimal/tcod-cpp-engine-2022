@@ -10,6 +10,7 @@ defaults:
 
 env:
   project-name: libtcod-vcpkg-template
+  # Build mode for CMake, such as "Release" or "Debug".
   BUILD_TYPE: Release
   # Indicates the location of the vcpkg as a Git submodule of the project repository.
   VCPKG_ROOT: ${{ github.workspace }}/vcpkg
@@ -125,7 +126,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0
           submodules: true
       - name: Restore vcpkg and its artifacts
         uses: actions/cache@v2
@@ -160,8 +160,7 @@ jobs:
         run: cmake --build build
       - name: Show contents of the build directory
         run: find build
-      - name: "Upload Artifact"
-        uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v2
         with:
           name: emscripten-builds
           path: build/bin
