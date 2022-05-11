@@ -37,7 +37,9 @@ void main_loop() {
 
   // Handle input.
   SDL_Event event;
+#ifndef __EMSCRIPTEN__
   SDL_WaitEvent(nullptr);
+#endif
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
       case SDL_QUIT:
