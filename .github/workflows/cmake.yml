@@ -11,6 +11,8 @@ defaults:
 env:
   project-name: libtcod-vcpkg-template
   BUILD_TYPE: Release
+  # Indicates the location of the vcpkg as a Git submodule of the project repository.
+  VCPKG_ROOT: ${{ github.workspace }}/vcpkg
 
 jobs:
   build:
@@ -32,8 +34,6 @@ jobs:
     env:
       # Indicates the CMake build directory where project files and binaries are being produced.
       CMAKE_BUILD_DIR: ${{ github.workspace }}/build
-      # Indicates the location of the vcpkg as a Git submodule of the project repository.
-      VCPKG_ROOT: ${{ github.workspace }}/vcpkg
 
     steps:
       # fetch-depth=0 and v1 are needed for 'git describe' to work correctly.
@@ -127,6 +127,16 @@ jobs:
         with:
           fetch-depth: 0
           submodules: true
+      - name: Restore vcpkg and its artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            build/vcpkg_installed/
+            ${{ env.VCPKG_ROOT }}
+            !${{ env.VCPKG_ROOT }}/buildtrees
+            !${{ env.VCPKG_ROOT }}/packages
+            !${{ env.VCPKG_ROOT }}/downloads
+          key: wasm32-emscripten-${{ hashFiles('vcpkg.json', '.git/modules/vcpkg/HEAD') }}
       - name: Setup cache
         id: cache-system-libraries
         uses: actions/cache@v2
