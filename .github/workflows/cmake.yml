@@ -10,6 +10,7 @@ defaults:
 
 env:
   project-name: libtcod-vcpkg-template
+  BUILD_TYPE: Release
 
 jobs:
   build:
@@ -29,7 +30,6 @@ jobs:
             platform-name: linux.x64
 
     env:
-      BUILD_TYPE: Release
       # Indicates the CMake build directory where project files and binaries are being produced.
       CMAKE_BUILD_DIR: ${{ github.workspace }}/build
       # Indicates the location of the vcpkg as a Git submodule of the project repository.
@@ -116,3 +116,44 @@ jobs:
           file_glob: true
           tag: ${{ github.ref }}
           overwrite: true
+
+  emscripten:
+    runs-on: ubuntu-latest
+    env:
+      EM_VERSION: 3.1.9
+      EM_CACHE_FOLDER: "emsdk-cache"
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Setup cache
+        id: cache-system-libraries
+        uses: actions/cache@v2
+        with:
+          path: ${{env.EM_CACHE_FOLDER}}
+          key: ${{env.EM_VERSION}}-${{ runner.os }}
+      - uses: mymindstorm/setup-emsdk@v11
+        with:
+          version: ${{env.EM_VERSION}}
+          actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
+      - name: Verify
+        run: emcc -v
+      - uses: lukka/get-cmake@latest
+      - name: Configure
+        run: emcmake cmake -S . -B build -G Ninja
+          -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE="${EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
+          -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
+          -DVCPKG_TARGET_TRIPLET=wasm32-emscripten
+          -DCMAKE_BUILD_TYPE="${{ env.BUILD_TYPE }}"
+      - name: Build
+        run: cmake --build build
+      - name: Show contents of the build directory
+        run: find build
+      - name: "Upload Artifact"
+        uses: actions/upload-artifact@v2
+        with:
+          name: emscripten-builds
+          path: build/bin
+          retention-days: 7
+          if-no-files-found: error
