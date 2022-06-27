@@ -27,6 +27,8 @@
     "mkdir",
     "MSVC",
     "mymindstorm",
+    "PAGEDOWN",
+    "PAGEUP",
     "preload",
     "pwsh",
     "SDLK",

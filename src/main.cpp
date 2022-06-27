@@ -8,22 +8,18 @@
 #include <libtcod.hpp>
 
 #include "data.hpp"
+#include "globals.hpp"
+#include "states/ingame.hpp"
 
 #if defined(_MSC_VER)
 #pragma warning(disable : 4297)  // Allow "throw" in main().  Letting the compiler handle termination.
 #endif
 
-static tcod::Console g_console;  // The global console object.
-static tcod::Context g_context;  // The global libtcod context.
-static std::array<int, 2> player_xy{40, 25};  // Player position.
-
 /// Game loop.
 static void main_loop() {
   // Rendering.
   g_console.clear();
-  if (g_console.in_bounds(player_xy)) {
-    g_console.at(player_xy) = {'@', tcod::ColorRGB{255, 255, 255}, tcod::ColorRGB{0, 0, 0}};
-  }
+  if (g_state) g_state->on_draw();
   g_context.present(g_console);
 
   // Handle input.
@@ -33,28 +29,10 @@ static void main_loop() {
   SDL_WaitEvent(nullptr);
 #endif
   while (SDL_PollEvent(&event)) {
-    switch (event.type) {
-      case SDL_KEYDOWN:
-        switch (event.key.keysym.sym) {
-          case SDLK_UP:
-            player_xy.at(1) -= 1;
-            break;
-          case SDLK_DOWN:
-            player_xy.at(1) += 1;
-            break;
-          case SDLK_LEFT:
-            player_xy.at(0) -= 1;
-            break;
-          case SDLK_RIGHT:
-            player_xy.at(0) += 1;
-            break;
-          default:
-            break;
-        }
-        break;
-      case SDL_QUIT:
-        std::exit(EXIT_SUCCESS);
-        break;
+    if (g_state) {
+      if (auto new_state = g_state->on_event(event); new_state) {
+        g_state = std::move(new_state);
+      }
     }
   }
 }
@@ -78,6 +56,8 @@ int main(int argc, char** argv) {
     params.console = g_console.get();
 
     g_context = tcod::Context(params);
+
+    g_state = std::make_unique<state::InGame>();
 
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(main_loop, 0, 0);
