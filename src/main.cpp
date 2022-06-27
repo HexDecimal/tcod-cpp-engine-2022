@@ -15,12 +15,15 @@
 
 static tcod::Console g_console;  // The global console object.
 static tcod::Context g_context;  // The global libtcod context.
+static std::array<int, 2> player_xy{40, 25};  // Player position.
 
 /// Game loop.
 static void main_loop() {
   // Rendering.
   g_console.clear();
-  tcod::print(g_console, {0, 0}, "Hello World", TCOD_white, std::nullopt);
+  if (g_console.in_bounds(player_xy)) {
+    g_console.at(player_xy) = {'@', tcod::ColorRGB{255, 255, 255}, tcod::ColorRGB{0, 0, 0}};
+  }
   g_context.present(g_console);
 
   // Handle input.
@@ -31,6 +34,24 @@ static void main_loop() {
 #endif
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
+      case SDL_KEYDOWN:
+        switch (event.key.keysym.sym) {
+          case SDLK_UP:
+            player_xy.at(1) -= 1;
+            break;
+          case SDLK_DOWN:
+            player_xy.at(1) += 1;
+            break;
+          case SDLK_LEFT:
+            player_xy.at(0) -= 1;
+            break;
+          case SDLK_RIGHT:
+            player_xy.at(0) += 1;
+            break;
+          default:
+            break;
+        }
+        break;
       case SDL_QUIT:
         std::exit(EXIT_SUCCESS);
         break;
@@ -53,7 +74,7 @@ int main(int argc, char** argv) {
     auto tileset = tcod::load_tilesheet(get_data_dir() / "dejavu16x16_gs_tc.png", {32, 8}, tcod::CHARMAP_TCOD);
     params.tileset = tileset.get();
 
-    g_console = tcod::Console{80, 40};
+    g_console = tcod::Console{80, 50};
     params.console = g_console.get();
 
     g_context = tcod::Context(params);
