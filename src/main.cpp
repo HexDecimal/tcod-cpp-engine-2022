@@ -26,14 +26,14 @@ auto get_data_dir() -> std::filesystem::path {
 };
 
 static tcod::Console g_console;  // The global console object.
-static tcod::ContextPtr g_context;  // The global libtcod context.
+static tcod::Context g_context;  // The global libtcod context.
 
 /// Game loop.
 void main_loop() {
   // Rendering.
   g_console.clear();
   tcod::print(g_console, {0, 0}, "Hello World", TCOD_white, std::nullopt);
-  g_context->present(g_console);
+  g_context.present(g_console);
 
   // Handle input.
   SDL_Event event;
@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
     g_console = tcod::Console{80, 40};
     params.console = g_console.get();
 
-    g_context = tcod::new_context(params);
+    g_context = tcod::Context(params);
 
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(main_loop, 0, 0);
