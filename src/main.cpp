@@ -4,32 +4,20 @@
 #include <SDL.h>
 
 #include <cstdlib>
-#include <filesystem>
 #include <iostream>
 #include <libtcod.hpp>
+
+#include "data.hpp"
 
 #if defined(_MSC_VER)
 #pragma warning(disable : 4297)  // Allow "throw" in main().  Letting the compiler handle termination.
 #endif
 
-/// Return the data directory.
-auto get_data_dir() -> std::filesystem::path {
-  static auto root_directory = std::filesystem::path{"."};  // Begin at the working directory.
-  while (!std::filesystem::exists(root_directory / "data")) {
-    // If the current working directory is missing the data dir then it will assume it exists in any parent directory.
-    root_directory /= "..";
-    if (!std::filesystem::exists(root_directory)) {
-      throw std::runtime_error("Could not find the data directory.");
-    }
-  }
-  return root_directory / "data";
-};
-
 static tcod::Console g_console;  // The global console object.
 static tcod::Context g_context;  // The global libtcod context.
 
 /// Game loop.
-void main_loop() {
+static void main_loop() {
   // Rendering.
   g_console.clear();
   tcod::print(g_console, {0, 0}, "Hello World", TCOD_white, std::nullopt);
