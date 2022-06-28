@@ -7,7 +7,7 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
 endif()
 
 project(
-    libtcod-vcpkg-template  # Project name, change this as needed.
+    tcod-engine-2022  # Project name, change this as needed.
     LANGUAGES C CXX
 )
 

@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     params.renderer_type = TCOD_RENDERER_SDL2;
     params.vsync = 1;
     params.sdl_window_flags = SDL_WINDOW_RESIZABLE;
-    params.window_title = "Libtcod Template Project";
+    params.window_title = "Libtcod Engine 2022";
 
     auto tileset = tcod::load_tilesheet(get_data_dir() / "dejavu16x16_gs_tc.png", {32, 8}, tcod::CHARMAP_TCOD);
     params.tileset = tileset.get();
