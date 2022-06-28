@@ -37,28 +37,35 @@ static void main_loop() {
   }
 }
 
+// Main initialization code.
+void main_init(int argc = 0, char** argv = nullptr) {
+  auto params = TCOD_ContextParams{};
+  params.tcod_version = TCOD_COMPILEDVERSION;
+  params.argc = argc;
+  params.argv = argv;
+  params.renderer_type = TCOD_RENDERER_SDL2;
+  params.vsync = 1;
+  params.sdl_window_flags = SDL_WINDOW_RESIZABLE;
+  params.window_title = "Libtcod Engine 2022";
+
+  auto tileset = tcod::load_tilesheet(get_data_dir() / "dejavu16x16_gs_tc.png", {32, 8}, tcod::CHARMAP_TCOD);
+  params.tileset = tileset.get();
+
+  g_console = tcod::Console{80, 50};
+  params.console = g_console.get();
+
+  g_context = tcod::Context(params);
+
+  g_state = std::make_unique<state::InGame>();
+  g_world = std::make_unique<World>();
+  g_world->map = Map{80, 45};
+  g_world->player = {40, 25, '@', {255, 255, 255}};
+}
+
 /// Main program entry point.
 int main(int argc, char** argv) {
   try {
-    auto params = TCOD_ContextParams{};
-    params.tcod_version = TCOD_COMPILEDVERSION;
-    params.argc = argc;
-    params.argv = argv;
-    params.renderer_type = TCOD_RENDERER_SDL2;
-    params.vsync = 1;
-    params.sdl_window_flags = SDL_WINDOW_RESIZABLE;
-    params.window_title = "Libtcod Engine 2022";
-
-    auto tileset = tcod::load_tilesheet(get_data_dir() / "dejavu16x16_gs_tc.png", {32, 8}, tcod::CHARMAP_TCOD);
-    params.tileset = tileset.get();
-
-    g_console = tcod::Console{80, 50};
-    params.console = g_console.get();
-
-    g_context = tcod::Context(params);
-
-    g_state = std::make_unique<state::InGame>();
-
+    main_init(argc, argv);
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(main_loop, 0, 0);
 #else

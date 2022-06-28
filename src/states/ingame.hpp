@@ -55,12 +55,26 @@ class InGame : public State {
     return nullptr;
   }
   auto cmd_move(int dx, int dy) -> std::unique_ptr<State> {
-    player_xy = {player_xy.at(0) + dx, player_xy.at(1) + dy};
+    auto& player = g_world->player;
+    const int x = player.pos.x + dx;
+    const int y = player.pos.y + dy;
+    if (!g_world->map.tiles.in_bounds({x, y})) return nullptr;
+    player.pos = {x, y};
     return nullptr;
   }
   virtual auto on_draw() -> void override {
-    if (g_console.in_bounds(player_xy)) {
-      g_console.at(player_xy) = {'@', tcod::ColorRGB{255, 255, 255}, tcod::ColorRGB{0, 0, 0}};
+    auto& map = g_world->map;
+    for (int y{0}; y < map.tiles.get_shape().at(1); ++y) {
+      for (int x{0}; x < map.tiles.get_shape().at(0); ++x) {
+        if (!g_console.in_bounds({x, y})) continue;
+        g_console.at({x, y}) = map.tiles.at({x, y}) == Tiles::floor
+                                   ? TCOD_ConsoleTile{'.', tcod::ColorRGB{64, 64, 64}, tcod::ColorRGB{0, 0, 0}}
+                                   : TCOD_ConsoleTile{'#', tcod::ColorRGB{64, 64, 64}, tcod::ColorRGB{0, 0, 0}};
+      }
+    }
+    auto& player = g_world->player;
+    if (g_console.in_bounds(player.pos)) {
+      g_console.at(player.pos) = {player.ch, player.fg, tcod::ColorRGB{0, 0, 0}};
     }
   }
 };
