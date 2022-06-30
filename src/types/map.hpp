@@ -2,8 +2,8 @@
 #include <libtcod.hpp>
 
 enum class Tiles {
-  floor = 0,
-  wall,
+  wall = 0,
+  floor,
 };
 
 struct Map {
