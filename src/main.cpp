@@ -9,6 +9,7 @@
 
 #include "data.hpp"
 #include "globals.hpp"
+#include "mapgen.hpp"
 #include "states/ingame.hpp"
 
 #if defined(_MSC_VER)
@@ -58,7 +59,7 @@ void main_init(int argc = 0, char** argv = nullptr) {
 
   g_state = std::make_unique<state::InGame>();
   g_world = std::make_unique<World>();
-  g_world->map = Map{80, 45};
+  generate_level(*g_world);
   g_world->player = {40, 25, '@', {255, 255, 255}};
 }
 

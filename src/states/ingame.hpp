@@ -1,6 +1,6 @@
 #pragma once
 #include "../globals.hpp"
-#include "../state.hpp"
+#include "../types/state.hpp"
 
 namespace state {
 class InGame : public State {
@@ -58,12 +58,12 @@ class InGame : public State {
     auto& player = g_world->player;
     const int x = player.pos.x + dx;
     const int y = player.pos.y + dy;
-    if (!g_world->map.tiles.in_bounds({x, y})) return nullptr;
+    if (!g_world->active_map().tiles.in_bounds({x, y})) return nullptr;
     player.pos = {x, y};
     return nullptr;
   }
   virtual auto on_draw() -> void override {
-    auto& map = g_world->map;
+    auto& map = g_world->active_map();
     for (int y{0}; y < map.tiles.get_shape().at(1); ++y) {
       for (int x{0}; x < map.tiles.get_shape().at(0); ++x) {
         if (!g_console.in_bounds({x, y})) continue;
