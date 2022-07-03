@@ -10,6 +10,7 @@
 #include "data.hpp"
 #include "globals.hpp"
 #include "mapgen.hpp"
+#include "rendering.hpp"
 #include "states/ingame.hpp"
 
 #if defined(_MSC_VER)
@@ -19,9 +20,7 @@
 /// Game loop.
 static void main_loop() {
   // Rendering.
-  g_console.clear();
-  if (g_state) g_state->on_draw();
-  g_context.present(g_console);
+  main_redraw();
 
   // Handle input.
   SDL_Event event;

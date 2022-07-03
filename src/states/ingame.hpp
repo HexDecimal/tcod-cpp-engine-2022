@@ -62,20 +62,6 @@ class InGame : public State {
     player.pos = {x, y};
     return nullptr;
   }
-  virtual auto on_draw() -> void override {
-    auto& map = g_world->active_map();
-    for (int y{0}; y < map.tiles.get_shape().at(1); ++y) {
-      for (int x{0}; x < map.tiles.get_shape().at(0); ++x) {
-        if (!g_console.in_bounds({x, y})) continue;
-        g_console.at({x, y}) = map.tiles.at({x, y}) == Tiles::floor
-                                   ? TCOD_ConsoleTile{'.', tcod::ColorRGB{64, 64, 64}, tcod::ColorRGB{0, 0, 0}}
-                                   : TCOD_ConsoleTile{'#', tcod::ColorRGB{64, 64, 64}, tcod::ColorRGB{0, 0, 0}};
-      }
-    }
-    auto& player = g_world->player;
-    if (g_console.in_bounds(player.pos)) {
-      g_console.at(player.pos) = {player.ch, player.fg, tcod::ColorRGB{0, 0, 0}};
-    }
-  }
+  virtual auto on_draw() -> void override { render_map(); }
 };
 }  // namespace state
