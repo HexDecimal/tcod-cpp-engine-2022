@@ -58,7 +58,7 @@ void main_init(int argc = 0, char** argv = nullptr) {
 
   g_state = std::make_unique<state::InGame>();
   g_world = std::make_unique<World>();
-  generate_level(*g_world);
+  procgen::generate_level(*g_world);
   g_world->player = {40, 25, '@', {255, 255, 255}};
 }
 

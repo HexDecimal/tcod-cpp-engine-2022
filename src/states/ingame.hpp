@@ -1,5 +1,6 @@
 #pragma once
 #include "../globals.hpp"
+#include "../mapgen.hpp"
 #include "../types/state.hpp"
 
 namespace state {
@@ -42,6 +43,9 @@ class InGame : public State {
             return cmd_move(0, -1);
           case SDLK_KP_9:
             return cmd_move(1, -1);
+          case SDLK_F2:
+            procgen::generate_level(*g_world);
+            return nullptr;
           default:
             break;
         }

@@ -30,6 +30,7 @@
     "PAGEDOWN",
     "PAGEUP",
     "preload",
+    "procgen",
     "pwsh",
     "SDLK",
     "svenstaro",
