@@ -88,7 +88,7 @@ inline auto fill_holes(Map& map) -> void {
 inline auto generate_level(World& world) -> Map& {
   const int WIDTH = 80;
   const int HEIGHT = 45;
-  auto rng = std::mt19937(std::rand());
+  auto rng = std::mt19937(std::rand() ^ std::time(nullptr));
   auto rng_random = std::uniform_real_distribution(0.0f, 1.0f);
   auto& map = world.maps["main"] = Map{WIDTH, HEIGHT};
   for (auto& it : map.tiles) it = Tiles::floor;
