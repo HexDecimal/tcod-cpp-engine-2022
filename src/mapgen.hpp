@@ -99,6 +99,17 @@ inline auto generate_level(World& world) -> Map& {
   cave_gen_step(map);
   with_border(WIDTH, HEIGHT, [&](int x, int y) { map.tiles.at({x, y}) = Tiles::wall; });
   fill_holes(map);
+
+  std::vector<std::array<int, 2>> floor_tiles;
+  floor_tiles.reserve(std::count(map.tiles.begin(), map.tiles.end(), Tiles::floor));
+  for (int y{0}; y < HEIGHT; ++y) {
+    for (int x{0}; x < WIDTH; ++x) {
+      if (map.tiles.at({x, y}) == Tiles::floor) floor_tiles.emplace_back(std::array<int, 2>{x, y});
+    }
+  }
+  const auto player_xy = floor_tiles.at(std::uniform_int_distribution<intptr_t>(0, floor_tiles.size())(rng));
+  world.player.pos = {player_xy.at(0), player_xy.at(1)};
+
   return map;
 }
 }  //  namespace procgen
