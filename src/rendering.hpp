@@ -21,13 +21,18 @@ inline void render_map(tcod::Console& console, const Map& map) {
     }
   }
 }
-inline void render_map(tcod::Console& console, const Map& map, const Actor& player) {
+inline void render_map(tcod::Console& console, const World& world) {
+  const auto& map = world.active_map();
   render_map(console, map);
-  if (console.in_bounds(player.pos)) {
-    console.at(player.pos) = {player.ch, player.fg, tcod::ColorRGB{0, 0, 0}};
+  for (auto&& actor : world.actors) {
+    if (!map.visible.in_bounds(actor.pos)) continue;
+    if (!map.visible.at(actor.pos)) continue;
+    if (console.in_bounds(actor.pos)) {
+      console.at(actor.pos) = {actor.ch, actor.fg, tcod::ColorRGB{0, 0, 0}};
+    }
   }
 }
-inline void render_map() { render_map(g_console, g_world->active_map(), g_world->active_player()); }
+inline void render_map() { render_map(g_console, *g_world); }
 
 inline void main_redraw() {
   g_console.clear();
