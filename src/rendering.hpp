@@ -27,7 +27,7 @@ inline void render_map(tcod::Console& console, const Map& map, const Actor& play
     console.at(player.pos) = {player.ch, player.fg, tcod::ColorRGB{0, 0, 0}};
   }
 }
-inline void render_map() { render_map(g_console, g_world->active_map(), g_world->player); }
+inline void render_map() { render_map(g_console, g_world->active_map(), g_world->active_player()); }
 
 inline void main_redraw() {
   g_console.clear();

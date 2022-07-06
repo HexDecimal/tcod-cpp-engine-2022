@@ -63,7 +63,7 @@ class InGame : public State {
     return nullptr;
   }
   auto cmd_move(int dx, int dy) -> std::unique_ptr<State> {
-    auto& player = g_world->player;
+    auto& player = g_world->active_player();
     const int x = player.pos.x + dx;
     const int y = player.pos.y + dy;
     if (!g_world->active_map().tiles.in_bounds({x, y})) return nullptr;
