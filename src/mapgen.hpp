@@ -3,6 +3,7 @@
 #include <iostream>
 #include <random>
 
+#include "fov.hpp"
 #include "types/map.hpp"
 #include "types/world.hpp"
 
@@ -109,6 +110,7 @@ inline auto generate_level(World& world) -> Map& {
   }
   const auto player_xy = floor_tiles.at(std::uniform_int_distribution<intptr_t>(0, floor_tiles.size())(rng));
   world.player.pos = {player_xy.at(0), player_xy.at(1)};
+  update_fov(map, world.player.pos);
 
   return map;
 }

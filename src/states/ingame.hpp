@@ -1,4 +1,5 @@
 #pragma once
+#include "../fov.hpp"
 #include "../globals.hpp"
 #include "../mapgen.hpp"
 #include "../types/state.hpp"
@@ -46,6 +47,9 @@ class InGame : public State {
           case SDLK_F2:
             procgen::generate_level(*g_world);
             return nullptr;
+          case SDLK_F3:
+            for (auto&& it : g_world->active_map().explored) it = true;
+            return nullptr;
           default:
             break;
         }
@@ -65,6 +69,7 @@ class InGame : public State {
     if (!g_world->active_map().tiles.in_bounds({x, y})) return nullptr;
     if (g_world->active_map().tiles.at({x, y}) != Tiles::floor) return nullptr;
     player.pos = {x, y};
+    update_fov(g_world->active_map(), player.pos);
     return nullptr;
   }
   virtual auto on_draw() -> void override { render_map(); }
