@@ -1,4 +1,5 @@
 #pragma once
+#include "../actions/bump.hpp"
 #include "../fov.hpp"
 #include "../globals.hpp"
 #include "../mapgen.hpp"
@@ -63,13 +64,7 @@ class InGame : public State {
     return nullptr;
   }
   auto cmd_move(int dx, int dy) -> std::unique_ptr<State> {
-    auto& player = g_world->active_player();
-    const int x = player.pos.x + dx;
-    const int y = player.pos.y + dy;
-    if (!g_world->active_map().tiles.in_bounds({x, y})) return nullptr;
-    if (g_world->active_map().tiles.at({x, y}) != Tiles::floor) return nullptr;
-    player.pos = {x, y};
-    update_fov(g_world->active_map(), player.pos);
+    action::Bump({dx, dy}).perform(*g_world, g_world->active_player());
     return nullptr;
   }
   virtual auto on_draw() -> void override { render_map(); }
