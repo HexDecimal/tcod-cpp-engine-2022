@@ -1,0 +1,41 @@
+<!doctype HTML>
+<html lang=en-us>
+
+<head>
+  <meta charset=utf-8>
+  <title>Libtcod Engine 2022</title>
+  <style>
+    body {
+      background-color: #000;
+      margin: 0;
+      padding: none;
+    }
+
+    .center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    canvas {
+      display: block;
+      aspect-ratio: 1280 / 800;
+      width: calc(min(100vw, 160vh));
+    }
+  </style>
+</head>
+
+<body onload=window.focus()>
+  <div class=center>
+    <canvas id=canvas oncontextmenu=event.preventDefault() tabindex=-1 onclick=window.focus()></canvas>
+  </div>
+  <script>
+    var Module = {
+      print(...args) { console.log("%s", ...args); },
+      canvas: document.getElementById('canvas'),
+    };
+  </script>
+  <script async src=tcod-engine-2022.js></script>
+</body>
+
+</html>

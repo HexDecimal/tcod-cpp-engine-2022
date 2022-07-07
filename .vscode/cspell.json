@@ -11,6 +11,7 @@
     "choosealicense",
     "CMAKE",
     "COMPILEDVERSION",
+    "COPYONLY",
     "czvf",
     "DCMAKE",
     "dejavu",
