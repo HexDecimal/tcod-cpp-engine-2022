@@ -20,6 +20,7 @@
     "emcmake",
     "EMSCRIPTEN",
     "EMSDK",
+    "hexdecimal",
     "ilammy",
     "keysym",
     "libtcod",

@@ -25,12 +25,15 @@ jobs:
           - os: windows-2019
             triplet: x64-windows
             platform-name: windows.x64
+            butler-url: https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default
           - os: macos-10.15
             triplet: x64-osx
             platform-name: macos.x64
+            butler-url: https://broth.itch.ovh/butler/darwin-amd64/LATEST/archive/default
           - os: ubuntu-20.04
             triplet: x64-linux
             platform-name: linux.x64
+            butler-url: https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
 
     env:
       # Indicates the CMake build directory where project files and binaries are being produced.
@@ -117,6 +120,21 @@ jobs:
           file_glob: true
           tag: ${{ github.ref }}
           overwrite: true
+      - name: Install Butler
+        if: github.ref == 'refs/heads/main'
+        run: |
+          mkdir ~/bin
+          cd ~/bin
+          curl -L -o butler.zip ${{ matrix.butler-url }}
+          unzip butler.zip
+          chmod +x butler
+          echo "~/bin" >> $GITHUB_PATH
+          ~/bin/butler -V
+      - name: Upload to Itch
+        if: github.ref == 'refs/heads/main'
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: butler push dist/${{ env.archive-name }} hexdecimal/tcod-cpp-engine-2022:${{ matrix.platform-name }}-latest
 
   emscripten:
     runs-on: ubuntu-latest
@@ -166,3 +184,18 @@ jobs:
           path: build/bin
           retention-days: 7
           if-no-files-found: error
+      - name: Install Butler
+        if: github.ref == 'refs/heads/main'
+        run: |
+          mkdir ~/bin
+          cd ~/bin
+          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+          echo "~/bin" >> $GITHUB_PATH
+          ~/bin/butler -V
+      - name: Upload to Itch
+        if: github.ref == 'refs/heads/main'
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: butler push build/bin hexdecimal/tcod-cpp-engine-2022:emscripten-latest
