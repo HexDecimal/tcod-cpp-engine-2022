@@ -40,9 +40,8 @@ if (EMSCRIPTEN)
     # Attach data folder to Emscripten builds.
     target_link_options(${PROJECT_NAME} PRIVATE --preload-file "${CMAKE_CURRENT_SOURCE_DIR}/data@data")
     configure_file(
-        ${PROJECT_SOURCE_DIR}/emscripten/index.html
+        ${PROJECT_SOURCE_DIR}/emscripten/index.html.in
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/index.html
-        COPYONLY
     )
 endif()
 

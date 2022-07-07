@@ -35,7 +35,7 @@
       canvas: document.getElementById('canvas'),
     };
   </script>
-  <script async src=tcod-engine-2022.js></script>
+  <script async src=${PROJECT_NAME}.js></script>
 </body>
 
 </html>
