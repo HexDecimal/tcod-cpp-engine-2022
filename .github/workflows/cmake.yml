@@ -88,6 +88,7 @@ jobs:
         run: |
           mkdir -p dist/${{ env.archive-name }}
           cp "${{ env.CMAKE_BUILD_DIR }}/bin"/* dist/${{ env.archive-name }}
+          rm -f dist/${{ env.archive-name }}/*.manifest
           cp -R data dist/${{ env.archive-name }}
       - name: Show contents of the dist directory
         run: find dist/${{ env.archive-name }}
