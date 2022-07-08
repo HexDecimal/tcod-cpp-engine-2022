@@ -57,6 +57,30 @@ inline void cave_gen_step(Map& map) {
   });
 }
 
+template <typename T, typename RNG>
+inline void shuffle_list(T& sequence, RNG& rng) {
+  for (int i{0}; i < static_cast<int>(sequence.size()); ++i) {
+    int pick = std::uniform_int_distribution(i, static_cast<int>(sequence.size() - 1))(rng);
+    std::swap(sequence.at(i), sequence.at(pick));
+  }
+}
+
+inline void shuffle_tiles(World& world, Map& map, const std::vector<Position>& shuffle_space) {
+  for (int i{0}; i < static_cast<int>(shuffle_space.size()); ++i) {
+    const int random_pick = std::uniform_int_distribution(i, static_cast<int>(shuffle_space.size() - 1))(world.rng);
+    std::swap(map.tiles.at(shuffle_space.at(i)), map.tiles.at(shuffle_space.at(random_pick)));
+  }
+}
+
+inline void cave_gen_ca_shuffle_step(World& world, Map& map) {
+  auto shuffle_space = std::vector<Position>{};
+  with_tiles_neighbors(map.tiles, [&](int x, int y, int walls) {
+    if (map.tiles.at({x, y}) == Tiles::wall && walls < 4) shuffle_space.emplace_back(Position{x, y});
+    if (map.tiles.at({x, y}) == Tiles::floor && walls >= 5) shuffle_space.emplace_back(Position{x, y});
+  });
+  shuffle_tiles(world, map, shuffle_space);
+}
+
 inline auto map_label(tcod::Matrix<bool, 2> tiles) -> std::tuple<tcod::Matrix<int, 2>, int> {
   auto labels = tcod::Matrix<int, 2>{tiles.get_shape(), 0};
   auto label_count = int{0};
@@ -105,20 +129,21 @@ inline auto fill_holes(Map& map) -> void {
 inline auto generate_level(World& world) -> Map& {
   const int WIDTH = 80;
   const int HEIGHT = 45;
-  auto rng = std::mt19937(std::rand() ^ static_cast<uint32_t>(std::time(nullptr)));
+  world.rng = std::mt19937(std::rand() ^ static_cast<uint32_t>(std::time(nullptr)));
+  auto& rng = world.rng;
   auto rng_random = std::uniform_real_distribution(0.0f, 1.0f);
   auto& map = world.maps["main"] = Map{WIDTH, HEIGHT};
-  for (auto& it : map.tiles) it = Tiles::floor;
-  for (auto& it : map.tiles) it = rng_random(rng) > 0.45f ? Tiles::floor : Tiles::wall;
   debug_show_map(map);
-  cave_gen_step(map);
+  for (size_t i{}; i < map.tiles.get_container().size(); ++i) {
+    map.tiles.get_container().at(i) = (i < map.tiles.get_container().size() * 45 / 100 ? Tiles::wall : Tiles::floor);
+  }
   debug_show_map(map);
-  cave_gen_step(map);
+  shuffle_list(map.tiles.get_container(), world.rng);
   debug_show_map(map);
-  cave_gen_step(map);
-  debug_show_map(map);
-  cave_gen_step(map);
-  debug_show_map(map);
+  for (int repeats{0}; repeats < 5; ++repeats) {
+    cave_gen_ca_shuffle_step(world, map);
+    debug_show_map(map);
+  }
   with_border(WIDTH, HEIGHT, [&](int x, int y) { map.tiles.at({x, y}) = Tiles::wall; });
   fill_holes(map);
   debug_show_map(map);

@@ -1,4 +1,5 @@
 #pragma once
+#include <random>
 #include <unordered_map>
 
 #include "actor.hpp"
@@ -11,4 +12,5 @@ struct World {
   auto active_player() const -> const Actor& { return actors.at(0); }
   std::vector<Actor> actors;
   std::unordered_map<std::string, Map> maps;
+  std::mt19937 rng;
 };
