@@ -4,6 +4,7 @@
 #include <random>
 
 #include "fov.hpp"
+#include "rendering.hpp"
 #include "types/map.hpp"
 #include "types/world.hpp"
 
@@ -26,26 +27,34 @@ inline void with_indexes(int width, int height, Func func) {
   }
 }
 
-inline void cave_gen_step(Map& map) {
-  const auto tiles_clone = map.tiles;
+template <typename Func>
+inline void with_tiles_neighbors(const tcod::Matrix<Tiles, 2>& tiles, Func func) {
+  const auto [WIDTH, HEIGHT] = tiles.get_shape();
   constexpr const std::array<std::array<int, 2>, 8> NEIGHBORS{
       {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}}};
-  for (int y{0}; y < map.get_height(); ++y) {
-    for (int x{0}; x < map.get_width(); ++x) {
+  for (int y{0}; y < HEIGHT; ++y) {
+    for (int x{0}; x < WIDTH; ++x) {
       int walls = 0;
       for (const auto adj : NEIGHBORS) {
         const auto nx = x + adj[0];
         const auto ny = y + adj[1];
-        if (!tiles_clone.in_bounds({nx, ny})) {
+        if (!tiles.in_bounds({nx, ny})) {
           walls += 1;
           continue;
         }
-        if (tiles_clone.at({nx, ny}) == Tiles::wall) walls += 1;
+        if (tiles.at({nx, ny}) == Tiles::wall) walls += 1;
       }
-      if (walls < 4) map.tiles.at({x, y}) = Tiles::floor;
-      if (walls >= 5) map.tiles.at({x, y}) = Tiles::wall;
+      func(x, y, walls);
     }
   }
+}
+
+inline void cave_gen_step(Map& map) {
+  auto tiles_clone = map.tiles;
+  with_tiles_neighbors(tiles_clone, [&](int x, int y, int walls) {
+    if (walls < 4) map.tiles.at({x, y}) = Tiles::floor;
+    if (walls >= 5) map.tiles.at({x, y}) = Tiles::wall;
+  });
 }
 
 inline auto map_label(tcod::Matrix<bool, 2> tiles) -> std::tuple<tcod::Matrix<int, 2>, int> {
@@ -101,12 +110,18 @@ inline auto generate_level(World& world) -> Map& {
   auto& map = world.maps["main"] = Map{WIDTH, HEIGHT};
   for (auto& it : map.tiles) it = Tiles::floor;
   for (auto& it : map.tiles) it = rng_random(rng) > 0.45f ? Tiles::floor : Tiles::wall;
+  debug_show_map(map);
   cave_gen_step(map);
+  debug_show_map(map);
   cave_gen_step(map);
+  debug_show_map(map);
   cave_gen_step(map);
+  debug_show_map(map);
   cave_gen_step(map);
+  debug_show_map(map);
   with_border(WIDTH, HEIGHT, [&](int x, int y) { map.tiles.at({x, y}) = Tiles::wall; });
   fill_holes(map);
+  debug_show_map(map);
 
   auto floor_tiles = std::vector<Position>{};
   floor_tiles.reserve(WIDTH * HEIGHT);
