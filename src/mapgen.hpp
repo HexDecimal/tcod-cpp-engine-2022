@@ -17,6 +17,15 @@ inline void with_border(int width, int height, const Func& func) {
   }
 }
 
+template <typename Func>
+inline void with_indexes(int width, int height, Func func) {
+  for (int y{0}; y < height; ++y) {
+    for (int x{0}; x < width; ++x) {
+      func(x, y);
+    }
+  }
+}
+
 inline void cave_gen_step(Map& map) {
   const auto [WIDTH, HEIGHT] = map.tiles.get_shape();
   const auto tiles_clone = map.tiles;
@@ -101,16 +110,13 @@ inline auto generate_level(World& world) -> Map& {
   with_border(WIDTH, HEIGHT, [&](int x, int y) { map.tiles.at({x, y}) = Tiles::wall; });
   fill_holes(map);
 
-  std::vector<std::array<int, 2>> floor_tiles;
-  floor_tiles.reserve(std::count(map.tiles.begin(), map.tiles.end(), Tiles::floor));
-  for (int y{0}; y < HEIGHT; ++y) {
-    for (int x{0}; x < WIDTH; ++x) {
-      if (map.tiles.at({x, y}) == Tiles::floor) floor_tiles.emplace_back(std::array<int, 2>{x, y});
-    }
-  }
-  const auto player_xy = floor_tiles.at(std::uniform_int_distribution<intptr_t>(0, floor_tiles.size())(rng));
+  auto floor_tiles = std::vector<Position>{};
+  floor_tiles.reserve(WIDTH * HEIGHT);
+  with_indexes(WIDTH, HEIGHT, [&](int x, int y) {
+    if (map.tiles.at({x, y}) == Tiles::floor) floor_tiles.emplace_back(Position{x, y});
+  });
   auto& player = world.active_player();
-  player.pos = {player_xy.at(0), player_xy.at(1)};
+  player.pos = floor_tiles.at(std::uniform_int_distribution<intptr_t>(0, floor_tiles.size())(rng));
   update_fov(map, player.pos);
 
   return map;
