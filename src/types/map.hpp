@@ -2,6 +2,8 @@
 #include <cassert>
 #include <libtcod.hpp>
 
+#include "ndarray.hpp"
+
 enum class Tiles {
   wall = 0,
   floor,
@@ -18,7 +20,7 @@ struct Map {
   }
   auto get_width() const noexcept -> int { return get_size().at(0); }
   auto get_height() const noexcept -> int { return get_size().at(1); }
-  tcod::Matrix<Tiles, 2> tiles;
-  tcod::Matrix<bool, 2> explored;
-  tcod::Matrix<bool, 2> visible;
+  util::Array2D<Tiles> tiles;
+  util::Array2D<bool> explored;
+  util::Array2D<bool> visible;
 };

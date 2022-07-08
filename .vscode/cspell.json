@@ -40,6 +40,7 @@
     "tcod",
     "tileset",
     "tilesheet",
+    "tparam",
     "ustar",
     "vcpkg",
     "vsync",

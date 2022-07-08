@@ -6,9 +6,11 @@
 #include "fov.hpp"
 #include "rendering.hpp"
 #include "types/map.hpp"
+#include "types/ndarray.hpp"
 #include "types/world.hpp"
 
 namespace procgen {
+/// Call func the border indexes on an array of the given shape.
 template <typename Func>
 inline void with_border(int width, int height, const Func& func) {
   for (int y{0}; y < height; ++y) {
@@ -17,7 +19,12 @@ inline void with_border(int width, int height, const Func& func) {
     }
   }
 }
-
+/// Call func the border indexes of the given array.
+template <typename Array, typename F>
+inline void with_border(const Array& array, F func) {
+  with_border(array.get_width(), array.get_height(), func);
+}
+/// Call func with all the indexes in an array of the given shape.
 template <typename Func>
 inline void with_indexes(int width, int height, Func func) {
   for (int y{0}; y < height; ++y) {
@@ -26,27 +33,40 @@ inline void with_indexes(int width, int height, Func func) {
     }
   }
 }
-
+/// Call func with all the indexes in an array.
+template <typename Array, typename F>
+inline void with_indexes(const Array& array, F func) {
+  with_indexes(array.get_width(), array.get_height(), func);
+}
+/// Call func on the neighbors surrounding x, y.  This may go out of bounds.
+template <typename F, typename Adj = std::array<std::array<int, 2>, 8>>
+inline void with_neighbors(
+    int x,
+    int y,
+    F func,
+    Adj neighbors = std::array<std::array<int, 2>, 8>{
+        {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}}}) {
+  for (const auto adj : neighbors) {
+    func(x + adj.at(0), y + adj.at(1));
+  }
+}
+/// Call func(x, y, neighbor_walls) on each tile of the given tiles array.
 template <typename Func>
-inline void with_tiles_neighbors(const tcod::Matrix<Tiles, 2>& tiles, Func func) {
+inline void with_tiles_neighbors(const util::Array2D<Tiles>& tiles, Func func) {
   const auto [WIDTH, HEIGHT] = tiles.get_shape();
   constexpr const std::array<std::array<int, 2>, 8> NEIGHBORS{
       {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}}};
-  for (int y{0}; y < HEIGHT; ++y) {
-    for (int x{0}; x < WIDTH; ++x) {
-      int walls = 0;
-      for (const auto adj : NEIGHBORS) {
-        const auto nx = x + adj[0];
-        const auto ny = y + adj[1];
-        if (!tiles.in_bounds({nx, ny})) {
-          walls += 1;
-          continue;
-        }
-        if (tiles.at({nx, ny}) == Tiles::wall) walls += 1;
+  with_indexes(tiles, [&](int x, int y) {
+    int walls = 0;
+    with_neighbors(x, y, [&](int nx, int ny) {
+      if (!tiles.in_bounds({nx, ny})) {
+        walls += 1;
+        return;
       }
-      func(x, y, walls);
-    }
-  }
+      if (tiles.at({nx, ny}) == Tiles::wall) walls += 1;
+    });
+    func(x, y, walls);
+  });
 }
 
 inline void cave_gen_step(Map& map) {
@@ -81,10 +101,9 @@ inline void cave_gen_ca_shuffle_step(World& world, Map& map) {
   shuffle_tiles(world, map, shuffle_space);
 }
 
-inline auto map_label(tcod::Matrix<bool, 2> tiles) -> std::tuple<tcod::Matrix<int, 2>, int> {
-  auto labels = tcod::Matrix<int, 2>{tiles.get_shape(), 0};
+inline auto map_label(util::Array2D<bool> tiles) -> std::tuple<util::Array2D<int>, int> {
+  auto labels = util::Array2D<int>{tiles.get_shape(), 0};
   auto label_count = int{0};
-  const auto [WIDTH, HEIGHT] = tiles.get_shape();
   auto fill_label = [&](std::array<int, 2> xy, int label_i, auto& recursive) -> void {
     if (!tiles.in_bounds(xy)) return;
     if (!tiles.at(xy)) return;
@@ -96,33 +115,28 @@ inline auto map_label(tcod::Matrix<bool, 2> tiles) -> std::tuple<tcod::Matrix<in
     recursive({x + 1, y}, label_i, recursive);
     recursive({x, y + 1}, label_i, recursive);
   };
-  for (int y{0}; y < HEIGHT; ++y) {
-    for (int x{0}; x < WIDTH; ++x) {
-      if (tiles.at({x, y})) {
-        fill_label({x, y}, ++label_count, fill_label);
-      }
-    }
-  }
+  with_indexes(tiles, [&](int x, int y) {
+    if (tiles.at({x, y})) fill_label({x, y}, ++label_count, fill_label);
+  });
   return {std::move(labels), label_count};
 }
 
 inline auto fill_holes(Map& map) -> void {
-  auto is_floor = tcod::Matrix<bool, 2>{map.tiles.get_shape()};
+  auto is_floor = util::Array2D<bool>{map.tiles.get_shape()};
   std::transform(map.tiles.begin(), map.tiles.end(), is_floor.begin(), [](auto t) { return t == Tiles::floor; });
   const auto [labels, label_n] = map_label(is_floor);
   std::vector<ptrdiff_t> label_sizes;
+  label_sizes.reserve(label_n);
   for (int i{0}; i < label_n; ++i) {
     label_sizes.emplace_back(std::count(labels.begin(), labels.end(), i + 1));
   }
   const auto biggest_label =
       static_cast<int>(std::max_element(label_sizes.begin(), label_sizes.end()) - label_sizes.begin()) + 1;
-  for (int y{0}; y < map.get_height(); ++y) {
-    for (int x{0}; x < map.get_width(); ++x) {
-      if (labels.at({x, y}) && labels.at({x, y}) != biggest_label) {
-        map.tiles.at({x, y}) = Tiles::wall;
-      }
+  with_indexes(labels, [&](int x, int y) {
+    if (labels.at({x, y}) && labels.at({x, y}) != biggest_label) {
+      map.tiles.at({x, y}) = Tiles::wall;
     }
-  }
+  });
   std::cout << "Filled " << (label_n - 1) << " holes.\n";
 }
 
@@ -150,7 +164,7 @@ inline auto generate_level(World& world) -> Map& {
 
   auto floor_tiles = std::vector<Position>{};
   floor_tiles.reserve(WIDTH * HEIGHT);
-  with_indexes(WIDTH, HEIGHT, [&](int x, int y) {
+  with_indexes(map, [&](int x, int y) {
     if (map.tiles.at({x, y}) == Tiles::floor) floor_tiles.emplace_back(Position{x, y});
   });
   auto& player = world.active_player();
