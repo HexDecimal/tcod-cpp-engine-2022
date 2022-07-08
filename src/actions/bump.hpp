@@ -8,7 +8,7 @@ class Bump : public Action {
   Bump() = default;
   Bump(Position dir) : dir_{dir} {}
   virtual void perform(World& world, Actor& actor) override {
-    const Position dest = {actor.pos.x + dir_.x, actor.pos.y + dir_.y};
+    const Position dest = actor.pos + dir_;
     Map& map = world.active_map();
     if (!map.tiles.in_bounds(dest)) return;
     if (map.tiles.at(dest) != Tiles::floor) return;
