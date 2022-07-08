@@ -30,20 +30,28 @@ class InGame : public State {
           case SDLK_PAGEDOWN:
             return cmd_move(1, 1);
           case SDLK_KP_1:
+          case SDLK_b:
             return cmd_move(-1, 1);
           case SDLK_KP_2:
+          case SDLK_j:
             return cmd_move(0, 1);
           case SDLK_KP_3:
+          case SDLK_n:
             return cmd_move(1, 1);
           case SDLK_KP_4:
+          case SDLK_h:
             return cmd_move(-1, 0);
           case SDLK_KP_6:
+          case SDLK_l:
             return cmd_move(1, 0);
           case SDLK_KP_7:
+          case SDLK_y:
             return cmd_move(-1, -1);
           case SDLK_KP_8:
+          case SDLK_k:
             return cmd_move(0, -1);
           case SDLK_KP_9:
+          case SDLK_u:
             return cmd_move(1, -1);
           case SDLK_F2:
             procgen::generate_level(*g_world);
