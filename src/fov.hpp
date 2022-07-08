@@ -5,7 +5,7 @@
 #include "types/position.hpp"
 
 inline auto update_fov(Map& map, Position pov) {
-  const auto [WIDTH, HEIGHT] = map.tiles.get_shape();
+  const auto [WIDTH, HEIGHT] = map.get_size();
   auto fov_map = TCODMap{WIDTH, HEIGHT};
   for (int y{0}; y < HEIGHT; ++y) {
     for (int x{0}; x < WIDTH; ++x) {

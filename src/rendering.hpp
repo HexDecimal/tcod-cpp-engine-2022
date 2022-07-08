@@ -3,8 +3,8 @@
 #include "globals.hpp"
 
 inline void render_map(tcod::Console& console, const Map& map) {
-  for (int y{0}; y < map.tiles.get_shape().at(1); ++y) {
-    for (int x{0}; x < map.tiles.get_shape().at(0); ++x) {
+  for (int y{0}; y < map.get_height(); ++y) {
+    for (int x{0}; x < map.get_width(); ++x) {
       if (!console.in_bounds({x, y})) continue;
       if (!map.explored.at({x, y})) continue;
       console.at({x, y}) = map.tiles.at({x, y}) == Tiles::floor

@@ -27,12 +27,11 @@ inline void with_indexes(int width, int height, Func func) {
 }
 
 inline void cave_gen_step(Map& map) {
-  const auto [WIDTH, HEIGHT] = map.tiles.get_shape();
   const auto tiles_clone = map.tiles;
   constexpr const std::array<std::array<int, 2>, 8> NEIGHBORS{
       {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}}};
-  for (int y{0}; y < HEIGHT; ++y) {
-    for (int x{0}; x < WIDTH; ++x) {
+  for (int y{0}; y < map.get_height(); ++y) {
+    for (int x{0}; x < map.get_width(); ++x) {
       int walls = 0;
       for (const auto adj : NEIGHBORS) {
         const auto nx = x + adj[0];
@@ -75,7 +74,6 @@ inline auto map_label(tcod::Matrix<bool, 2> tiles) -> std::tuple<tcod::Matrix<in
 }
 
 inline auto fill_holes(Map& map) -> void {
-  const auto [WIDTH, HEIGHT] = map.tiles.get_shape();
   auto is_floor = tcod::Matrix<bool, 2>{map.tiles.get_shape()};
   std::transform(map.tiles.begin(), map.tiles.end(), is_floor.begin(), [](auto t) { return t == Tiles::floor; });
   const auto [labels, label_n] = map_label(is_floor);
@@ -85,8 +83,8 @@ inline auto fill_holes(Map& map) -> void {
   }
   const auto biggest_label =
       static_cast<int>(std::max_element(label_sizes.begin(), label_sizes.end()) - label_sizes.begin()) + 1;
-  for (int y{0}; y < HEIGHT; ++y) {
-    for (int x{0}; x < WIDTH; ++x) {
+  for (int y{0}; y < map.get_height(); ++y) {
+    for (int x{0}; x < map.get_width(); ++x) {
       if (labels.at({x, y}) && labels.at({x, y}) != biggest_label) {
         map.tiles.at({x, y}) = Tiles::wall;
       }
