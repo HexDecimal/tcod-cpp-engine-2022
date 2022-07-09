@@ -7,7 +7,7 @@ struct Position {
   Position operator+(const Position rhs) const noexcept { return {this->x + rhs.x, this->y + rhs.y}; }
   Position operator-(const Position rhs) const noexcept { return {this->x - rhs.x, this->y - rhs.y}; }
   bool operator==(const Position rhs) const noexcept { return this->x == rhs.x && this->y == rhs.y; }
-  bool operator!=(const Position rhs) const noexcept { return *this != rhs; }
+  bool operator!=(const Position rhs) const noexcept { return !(*this == rhs); }
 
   int x;
   int y;
