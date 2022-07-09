@@ -53,9 +53,6 @@ inline void with_neighbors(
 /// Call func(x, y, neighbor_walls) on each tile of the given tiles array.
 template <typename Func>
 inline void with_tiles_neighbors(const util::Array2D<Tiles>& tiles, Func func) {
-  const auto [WIDTH, HEIGHT] = tiles.get_shape();
-  constexpr const std::array<std::array<int, 2>, 8> NEIGHBORS{
-      {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}}};
   with_indexes(tiles, [&](int x, int y) {
     int walls = 0;
     with_neighbors(x, y, [&](int nx, int ny) {
