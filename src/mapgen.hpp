@@ -132,7 +132,7 @@ inline auto fill_holes(Map& map) -> void {
   }
   const auto biggest_label =
       static_cast<int>(std::max_element(label_sizes.begin(), label_sizes.end()) - label_sizes.begin()) + 1;
-  with_indexes(labels, [&](int x, int y) {
+  with_indexes(labels, [&, &labels = labels](int x, int y) {
     if (labels.at({x, y}) && labels.at({x, y}) != biggest_label) {
       map.tiles.at({x, y}) = Tiles::wall;
     }
