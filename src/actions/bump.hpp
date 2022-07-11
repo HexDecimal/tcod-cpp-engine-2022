@@ -1,8 +1,6 @@
 #pragma once
 #include <fmt/core.h>
 
-#include <iostream>
-
 #include "../fov.hpp"
 #include "../types/action.hpp"
 #include "../types/position.hpp"
@@ -18,7 +16,7 @@ class Bump : public Action {
     if (map.tiles.at(dest) != Tiles::floor) return;
     for (auto&& other : world.actors) {
       if (other.pos == dest) {
-        std::cout << fmt::format("The {} laughs at your puny efforts to attack him!\n", actor.name);
+        fmt::print("The {} laughs at your puny efforts to attack him!\n", actor.name);
         return;
       }
     }
