@@ -137,6 +137,15 @@ inline auto fill_holes(Map& map) -> void {
   std::cout << "Filled " << (label_n - 1) << " holes.\n";
 }
 
+/// Pop and return a random item from a vector.
+template <typename VectorLike, typename RNG>
+inline auto pop_random(VectorLike& list, RNG& rng) {
+  auto pop_iter = list.begin() + std::uniform_int_distribution<intptr_t>(0, list.size())(rng);
+  auto item = std::move(*pop_iter);
+  list.erase(pop_iter);
+  return item;
+}
+
 inline auto generate_level(World& world) -> Map& {
   const int WIDTH = 80;
   const int HEIGHT = 45;
@@ -164,8 +173,13 @@ inline auto generate_level(World& world) -> Map& {
   with_indexes(map, [&](int x, int y) {
     if (map.tiles.at({x, y}) == Tiles::floor) floor_tiles.emplace_back(Position{x, y});
   });
+
+  for (int repeats{0}; repeats < 20; ++repeats) {
+    world.actors.emplace_back(Actor{pop_random(floor_tiles, world.rng), 'o', {63, 127, 63}});
+  }
+
   auto& player = world.active_player();
-  player.pos = floor_tiles.at(std::uniform_int_distribution<intptr_t>(0, floor_tiles.size())(rng));
+  player.pos = pop_random(floor_tiles, world.rng);
   update_fov(map, player.pos);
 
   return map;
