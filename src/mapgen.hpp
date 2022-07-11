@@ -175,7 +175,7 @@ inline auto generate_level(World& world) -> Map& {
   });
 
   for (int repeats{0}; repeats < 20; ++repeats) {
-    world.actors.emplace_back(Actor{pop_random(floor_tiles, world.rng), 'o', {63, 127, 63}});
+    world.actors.emplace_back(Actor{pop_random(floor_tiles, world.rng), "orc", 'o', {63, 127, 63}});
   }
 
   auto& player = world.active_player();
