@@ -1,4 +1,8 @@
 #pragma once
+#include <fmt/core.h>
+
+#include <iostream>
+
 #include "../fov.hpp"
 #include "../types/action.hpp"
 #include "../types/position.hpp"
@@ -12,6 +16,12 @@ class Bump : public Action {
     Map& map = world.active_map();
     if (!map.tiles.in_bounds(dest)) return;
     if (map.tiles.at(dest) != Tiles::floor) return;
+    for (auto&& other : world.actors) {
+      if (other.pos == dest) {
+        std::cout << fmt::format("The {} laughs at your puny efforts to attack him!\n", actor.name);
+        return;
+      }
+    }
     actor.pos = dest;
     if (&actor == &world.active_player()) update_fov(map, actor.pos);
   };

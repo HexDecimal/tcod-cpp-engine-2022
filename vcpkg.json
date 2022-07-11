@@ -3,6 +3,7 @@
   "name": "libtcod-template",
   "version-semver": "0.0.0",
   "dependencies": [
+    "fmt",
     "glad",
     "lodepng-c",
     "sdl2",
