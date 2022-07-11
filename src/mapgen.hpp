@@ -150,7 +150,6 @@ inline auto generate_level(World& world) -> Map& {
   const int WIDTH = 80;
   const int HEIGHT = 45;
   world.rng = std::mt19937(std::rand() ^ static_cast<uint32_t>(std::time(nullptr)));
-  auto& rng = world.rng;
   auto rng_random = std::uniform_real_distribution(0.0f, 1.0f);
   auto& map = world.maps["main"] = Map{WIDTH, HEIGHT};
   debug_show_map(map);
