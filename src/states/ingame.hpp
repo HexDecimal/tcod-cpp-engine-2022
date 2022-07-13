@@ -2,6 +2,7 @@
 #include "../actions/bump.hpp"
 #include "../fov.hpp"
 #include "../globals.hpp"
+#include "../logic.hpp"
 #include "../mapgen.hpp"
 #include "../types/state.hpp"
 
@@ -73,6 +74,7 @@ class InGame : public State {
   }
   auto cmd_move(int dx, int dy) -> std::unique_ptr<State> {
     action::Bump({dx, dy}).perform(*g_world, g_world->active_player());
+    enemy_turn(*g_world);
     return nullptr;
   }
   virtual auto on_draw() -> void override { render_map(); }
