@@ -174,7 +174,9 @@ inline auto generate_level(World& world) -> Map& {
   });
 
   for (int repeats{0}; repeats < 20; ++repeats) {
-    world.actors.emplace_back(Actor{pop_random(floor_tiles, world.rng), "orc", 'o', {63, 127, 63}});
+    auto& monster = world.actors.emplace_back(Actor{pop_random(floor_tiles, world.rng), "orc", 'o', {63, 127, 63}});
+    monster.stats.max_hp = monster.stats.hp = 10;
+    monster.stats.attack = 3;
   }
 
   auto& player = world.active_player();
