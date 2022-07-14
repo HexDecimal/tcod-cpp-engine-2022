@@ -36,6 +36,31 @@ inline void render_map(tcod::Console& console, const World& world) {
 }
 inline void render_map() { render_map(g_console, *g_world); }
 
+inline void render_log(tcod::Console& console, World& world) {
+  tcod::Console log_console{console.get_width(), console.get_height() - 45};
+  int y = log_console.get_height();
+  for (auto it = world.log.messages.crbegin(); it != world.log.messages.crend(); ++it) {
+    const auto& msg = *it;
+    const auto last_y = y;
+    auto print_msg = [&](std::string_view text, const tcod::ColorRGB& fg) {
+      y -= tcod::get_height_rect(log_console.get_width(), text);
+      tcod::print_rect(log_console, {0, y, 0, log_console.get_width()}, text, fg, {});
+    };
+    if (msg.count > 1) {
+      print_msg(fmt::format("{} (x{})", msg.text, msg.count), msg.fg);
+    } else {
+      print_msg(msg.text, msg.fg);
+    }
+    if (y < 0) break;
+  }
+  tcod::blit(console, log_console, {0, 45});
+}
+
+inline void render_all(tcod::Console& console, World& world) {
+  render_map(console, world);
+  render_log(console, world);
+}
+
 inline void main_redraw() {
   g_console.clear();
   if (g_state) g_state->on_draw();

@@ -81,6 +81,6 @@ class InGame : public State {
     enemy_turn(*g_world);
     return nullptr;
   }
-  virtual auto on_draw() -> void override { render_map(); }
+  virtual auto on_draw() -> void override { render_all(g_console, *g_world); }
 };
 }  // namespace state

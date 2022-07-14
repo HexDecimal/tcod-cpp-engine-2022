@@ -12,11 +12,17 @@ class Bump : public Action {
   virtual void perform(World& world, Actor& actor) override {
     const Position dest = actor.pos + dir_;
     Map& map = world.active_map();
-    if (!map.tiles.in_bounds(dest)) return;
-    if (map.tiles.at(dest) != Tiles::floor) return;
+    if (!map.tiles.in_bounds(dest)) {
+      world.log.append("That way is blocked!");
+      return;
+    }
+    if (map.tiles.at(dest) != Tiles::floor) {
+      world.log.append("That way is blocked!");
+      return;
+    }
     for (const auto& [other_id, other] : world.actors) {
       if (other.pos == dest) {
-        fmt::print("The {} laughs at your puny efforts to attack him!\n", actor.name);
+        world.log.append(fmt::format("The {} laughs at your puny efforts to attack him!", other.name));
         return;
       }
     }

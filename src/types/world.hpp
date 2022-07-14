@@ -5,6 +5,7 @@
 
 #include "actor.hpp"
 #include "map.hpp"
+#include "messages.hpp"
 
 using ActorID = int;
 
@@ -17,4 +18,5 @@ struct World {
   std::unordered_map<std::string, Map> maps;
   std::mt19937 rng;
   std::deque<ActorID> schedule;
+  MessageLog log;
 };
