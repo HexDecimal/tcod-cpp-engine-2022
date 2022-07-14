@@ -1,6 +1,7 @@
 #pragma once
 
-#include <iostream>
+#include <fmt/core.h>
+
 #include <random>
 
 #include "fov.hpp"
@@ -135,7 +136,7 @@ inline auto fill_holes(Map& map) -> void {
       map.tiles.at({x, y}) = Tiles::wall;
     }
   });
-  std::cout << "Filled " << (label_n - 1) << " holes.\n";
+  fmt::print("Filled {} holes.\n", label_n - 1);
 }
 
 /// Pop and return a random item from a vector.
