@@ -66,6 +66,8 @@ void main_init(int argc = 0, char** argv = nullptr) {
   player.stats.attack = 5;
   player.stats.defense = 2;
 
+  g_world->schedule.emplace_back(0);
+
   procgen::generate_level(*g_world);
 }
 

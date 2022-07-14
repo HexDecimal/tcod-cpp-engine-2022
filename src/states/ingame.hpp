@@ -1,4 +1,6 @@
 #pragma once
+#include <cassert>
+
 #include "../actions/bump.hpp"
 #include "../fov.hpp"
 #include "../globals.hpp"
@@ -9,6 +11,8 @@
 namespace state {
 class InGame : public State {
   virtual auto on_event(SDL_Event& event) -> std::unique_ptr<State> override {
+    assert(g_world);
+    assert(g_world->schedule.front() == 0);
     switch (event.type) {
       case SDL_KEYDOWN: {
         const int modified_y =
