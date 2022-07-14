@@ -7,6 +7,7 @@
 #include <iostream>
 #include <libtcod.hpp>
 
+#include "constants.hpp"
 #include "data.hpp"
 #include "globals.hpp"
 #include "mapgen.hpp"
@@ -51,7 +52,7 @@ void main_init(int argc = 0, char** argv = nullptr) {
   auto tileset = tcod::load_tilesheet(get_data_dir() / "dejavu16x16_gs_tc.png", {32, 8}, tcod::CHARMAP_TCOD);
   params.tileset = tileset.get();
 
-  g_console = tcod::Console{80, 50};
+  g_console = tcod::Console{constants::CONSOLE_WIDTH, constants::CONSOLE_HEIGHT};
   params.console = g_console.get();
 
   g_context = tcod::Context(params);

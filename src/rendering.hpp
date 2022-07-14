@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 
+#include "constants.hpp"
 #include "globals.hpp"
 
 inline void render_map(tcod::Console& console, const Map& map, bool show_all = false) {
@@ -37,7 +38,7 @@ inline void render_map(tcod::Console& console, const World& world) {
 inline void render_map() { render_map(g_console, *g_world); }
 
 inline void render_log(tcod::Console& console, World& world) {
-  tcod::Console log_console{console.get_width(), console.get_height() - 45};
+  tcod::Console log_console{console.get_width(), console.get_height() - constants::MAP_HEIGHT};
   int y = log_console.get_height();
   for (auto it = world.log.messages.crbegin(); it != world.log.messages.crend(); ++it) {
     const auto& msg = *it;

@@ -4,6 +4,7 @@
 
 #include <random>
 
+#include "constants.hpp"
 #include "fov.hpp"
 #include "logic.hpp"
 #include "rendering.hpp"
