@@ -58,8 +58,11 @@ void main_init(int argc = 0, char** argv = nullptr) {
 
   g_state = std::make_unique<state::InGame>();
   g_world = std::make_unique<World>();
-  auto& player = g_world->actors.emplace_back(Actor{{40, 25}, "player", '@', {255, 255, 255}});
-  player.stats.hp = player.stats.max_hp = 30;
+  auto& player = g_world->actors.emplace(0, Actor{}).first->second;
+  player.name = "player";
+  player.ch = '@';
+  player.fg = {255, 255, 255};
+  player.stats.max_hp = player.stats.hp = 30;
   player.stats.attack = 5;
   player.stats.defense = 2;
 

@@ -14,7 +14,7 @@ class Bump : public Action {
     Map& map = world.active_map();
     if (!map.tiles.in_bounds(dest)) return;
     if (map.tiles.at(dest) != Tiles::floor) return;
-    for (auto&& other : world.actors) {
+    for (const auto& [other_id, other] : world.actors) {
       if (other.pos == dest) {
         fmt::print("The {} laughs at your puny efforts to attack him!\n", actor.name);
         return;
