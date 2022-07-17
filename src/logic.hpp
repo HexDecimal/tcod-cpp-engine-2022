@@ -25,7 +25,6 @@ inline auto enemy_turn(World& world) -> void {
     world.schedule.push_back(actor_id);
     world.schedule.pop_front();
     auto& actor = world.actors.at(actor_id);
-    world.log.append(fmt::format("The {} growls!", actor.name));
-    fmt::print("The {} ({:08X}) growls!\n", actor.name, actor_id);
+    if (actor.ai) actor.ai->perform(world, actor);
   }
 }

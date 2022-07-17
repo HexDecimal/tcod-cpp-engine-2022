@@ -4,6 +4,7 @@
 
 #include <random>
 
+#include "actions/basic_ai.hpp"
 #include "constants.hpp"
 #include "fov.hpp"
 #include "logic.hpp"
@@ -184,6 +185,7 @@ inline auto generate_level(World& world) -> Map& {
     monster.fg = {63, 127, 63};
     monster.stats.max_hp = monster.stats.hp = 10;
     monster.stats.attack = 3;
+    monster.ai = std::make_unique<action::BasicAI>();
     world.schedule.push_back(monster_id);
   }
 

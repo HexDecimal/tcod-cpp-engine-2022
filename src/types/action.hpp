@@ -1,6 +1,6 @@
 #pragma once
-#include "actor.hpp"
-#include "world.hpp"
+#include "actor_fwd.hpp"
+#include "world_fwd.hpp"
 
 namespace action {
 class Action {

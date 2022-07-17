@@ -2,8 +2,8 @@
 #include <fmt/core.h>
 
 #include "../fov.hpp"
-#include "../types/action.hpp"
 #include "../types/position.hpp"
+#include "base.hpp"
 namespace action {
 class Bump : public Action {
  public:
