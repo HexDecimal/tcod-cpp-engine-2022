@@ -4,10 +4,12 @@
 #include <string>
 
 #include "action.hpp"
+#include "actor_id.hpp"
 #include "position.hpp"
 #include "stats.hpp"
 
 struct Actor {
+  ActorID id;
   Position pos;
   std::string name;
   int ch;

@@ -4,10 +4,9 @@
 #include <unordered_map>
 
 #include "actor.hpp"
+#include "actor_id.hpp"
 #include "map.hpp"
 #include "messages.hpp"
-
-using ActorID = int;
 
 struct World {
   auto active_map() -> Map& { return maps.at("main"); }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL.h>
+#include <fmt/core.h>
 
 #include "constants.hpp"
 #include "globals.hpp"

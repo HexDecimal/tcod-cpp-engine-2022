@@ -1,6 +1,7 @@
 #pragma once
 #include <fmt/core.h>
 
+#include "../combat.hpp"
 #include "../fov.hpp"
 #include "../types/position.hpp"
 #include "base.hpp"
@@ -20,9 +21,9 @@ class Bump : public Action {
       world.log.append("That way is blocked!");
       return;
     }
-    for (const auto& [other_id, other] : world.actors) {
+    for (auto& [other_id, other] : world.actors) {
       if (other.pos == dest) {
-        world.log.append(fmt::format("The {} laughs at your puny efforts to attack him!", other.name));
+        combat::attack(world, actor, other);
         return;
       }
     }
