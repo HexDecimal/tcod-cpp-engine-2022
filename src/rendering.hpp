@@ -38,8 +38,11 @@ inline void render_map(tcod::Console& console, const World& world) {
 }
 inline void render_map() { render_map(g_console, *g_world); }
 
-inline void render_log(tcod::Console& console, World& world) {
-  tcod::Console log_console{console.get_width(), console.get_height() - constants::MAP_HEIGHT};
+inline void render_log(tcod::Console& console, const World& world) {
+  const int log_x = 22;
+  const int log_width = console.get_width() - log_x;
+  const int log_height = console.get_height() - constants::MAP_HEIGHT;
+  tcod::Console log_console{log_width, log_height};
   int y = log_console.get_height();
   for (auto it = world.log.messages.crbegin(); it != world.log.messages.crend(); ++it) {
     const auto& msg = *it;
@@ -55,12 +58,39 @@ inline void render_log(tcod::Console& console, World& world) {
     }
     if (y < 0) break;
   }
-  tcod::blit(console, log_console, {0, 45});
+  tcod::blit(console, log_console, {log_x, 45});
 }
 
-inline void render_all(tcod::Console& console, World& world) {
-  render_map(console, world);
+inline void draw_bar(
+    tcod::Console& console,
+    int x,
+    int y,
+    int width,
+    float filled,
+    const tcod::ColorRGB fill_color,
+    const tcod::ColorRGB back_color) {
+  const auto bar_width = std::clamp(static_cast<int>(std::round(width * filled)), 0, width);
+  tcod::draw_rect(console, {x, y, width, 1}, 0, {}, back_color);
+  tcod::draw_rect(console, {x, y, bar_width, 1}, 0, {}, fill_color);
+}
+
+inline void render_gui(tcod::Console& console, const World& world) {
+  const auto& player = world.active_player();
+  const auto text_color = tcod::ColorRGB{255, 255, 255};
+  const auto hp_bar_back = tcod::ColorRGB{127, 0, 0};
+  const auto hp_bar_fill = tcod::ColorRGB{255, 63, 63};
+  const int x = 1;
+  const int y = constants::MAP_HEIGHT + 1;
+
+  draw_bar(console, x, y, 20, static_cast<float>(player.stats.hp) / player.stats.max_hp, hp_bar_fill, hp_bar_back);
+  tcod::print_rect(
+      console, {x, y, 20, 1}, fmt::format(" HP: {}/{}", player.stats.hp, player.stats.max_hp), text_color, {});
   render_log(console, world);
+}
+
+inline void render_all(tcod::Console& console, const World& world) {
+  render_map(console, world);
+  render_gui(console, world);
 }
 
 inline void main_redraw() {
