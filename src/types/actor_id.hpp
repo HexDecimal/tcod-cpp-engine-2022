@@ -1,2 +1,2 @@
 #pragma once
-using ActorID = int;
+using ActorID = uint32_t;

@@ -6,9 +6,8 @@
 
 /// Create a unique actor and return the mapping iterator to that actor.
 inline auto new_actor(World& world) {
-  auto uniform = std::uniform_int_distribution<ActorID>();
   while (true) {
-    auto new_id = uniform(world.rng);
+    auto new_id = ActorID{world.rng()};
     auto [iterator, success] = world.actors.insert({new_id, Actor{}});
     if (success) {
       iterator->second.id = new_id;
