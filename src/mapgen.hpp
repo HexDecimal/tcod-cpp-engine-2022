@@ -80,15 +80,15 @@ inline void cave_gen_step(Map& map) {
 
 template <typename T, typename RNG>
 inline void shuffle_list(T& sequence, RNG& rng) {
-  for (int i{0}; i < static_cast<int>(sequence.size()); ++i) {
-    int pick = std::uniform_int_distribution(i, static_cast<int>(sequence.size() - 1))(rng);
+  for (size_t i{0}; i < sequence.size(); ++i) {
+    const size_t pick = i + rng() % (sequence.size() - i);
     std::swap(sequence.at(i), sequence.at(pick));
   }
 }
 
 inline void shuffle_tiles(World& world, Map& map, const std::vector<Position>& shuffle_space) {
-  for (int i{0}; i < static_cast<int>(shuffle_space.size()); ++i) {
-    const int random_pick = std::uniform_int_distribution(i, static_cast<int>(shuffle_space.size() - 1))(world.rng);
+  for (size_t i{0}; i < shuffle_space.size(); ++i) {
+    const size_t random_pick = i + world.rng() % (shuffle_space.size() - i);
     std::swap(map.tiles.at(shuffle_space.at(i)), map.tiles.at(shuffle_space.at(random_pick)));
   }
 }
@@ -144,7 +144,7 @@ inline auto fill_holes(Map& map) -> void {
 /// Pop and return a random item from a vector.
 template <typename VectorLike, typename RNG>
 inline auto pop_random(VectorLike& list, RNG& rng) {
-  auto pop_iter = list.begin() + std::uniform_int_distribution<intptr_t>(0, list.size())(rng);
+  auto pop_iter = list.begin() + rng() % list.size();
   auto item = std::move(*pop_iter);
   list.erase(pop_iter);
   return item;
@@ -154,7 +154,6 @@ inline auto generate_level(World& world) -> Map& {
   const int WIDTH = 80;
   const int HEIGHT = 45;
   world.rng = std::mt19937(std::rand() ^ static_cast<uint32_t>(std::time(nullptr)));
-  auto rng_random = std::uniform_real_distribution(0.0f, 1.0f);
   auto& map = world.maps["main"] = Map{WIDTH, HEIGHT};
   debug_show_map(map);
   for (size_t i{}; i < map.tiles.get_container().size(); ++i) {
