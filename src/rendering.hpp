@@ -76,15 +76,20 @@ inline void draw_bar(
 
 inline void render_gui(tcod::Console& console, const World& world) {
   const auto& player = world.active_player();
-  const auto text_color = tcod::ColorRGB{255, 255, 255};
-  const auto hp_bar_back = tcod::ColorRGB{127, 0, 0};
-  const auto hp_bar_fill = tcod::ColorRGB{255, 63, 63};
-  const int x = 1;
-  const int y = constants::MAP_HEIGHT + 1;
+  const auto text_color = constants::WHITE;
+  const int hp_x = 1;
+  const int hp_y = constants::MAP_HEIGHT + 1;
 
-  draw_bar(console, x, y, 20, static_cast<float>(player.stats.hp) / player.stats.max_hp, hp_bar_fill, hp_bar_back);
+  draw_bar(
+      console,
+      hp_x,
+      hp_y,
+      20,
+      static_cast<float>(player.stats.hp) / player.stats.max_hp,
+      constants::HP_BAR_FILL,
+      constants::HP_BAR_BACK);
   tcod::print_rect(
-      console, {x, y, 20, 1}, fmt::format(" HP: {}/{}", player.stats.hp, player.stats.max_hp), text_color, {});
+      console, {hp_x, hp_y, 20, 1}, fmt::format(" HP: {}/{}", player.stats.hp, player.stats.max_hp), text_color, {});
   render_log(console, world);
 }
 
