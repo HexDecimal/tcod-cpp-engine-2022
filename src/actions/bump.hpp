@@ -11,6 +11,7 @@ class Bump : public Action {
   Bump() = default;
   Bump(Position dir) : dir_{dir} {}
   virtual void perform(World& world, Actor& actor) override {
+    if (dir_ == Position{0, 0}) return;
     const Position dest = actor.pos + dir_;
     Map& map = world.active_map();
     if (!map.tiles.in_bounds(dest)) {

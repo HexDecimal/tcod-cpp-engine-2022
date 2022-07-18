@@ -18,6 +18,10 @@ class InGame : public State {
         const int modified_y =
             (event.key.keysym.mod & KMOD_SHIFT ? -1 : 0) + (event.key.keysym.mod & KMOD_CTRL ? 1 : 0);
         switch (event.key.keysym.sym) {
+          case SDLK_PERIOD:
+          case SDLK_KP_5:
+          case SDLK_KP_CLEAR:
+            return cmd_move(0, 0);
           case SDLK_UP:
             return cmd_move(0, -1);
           case SDLK_DOWN:
