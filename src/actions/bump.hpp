@@ -14,11 +14,11 @@ class Bump : public Action {
     const Position dest = actor.pos + dir_;
     Map& map = world.active_map();
     if (!map.tiles.in_bounds(dest)) {
-      world.log.append("That way is blocked!");
+      if (actor.id == 0) world.log.append("That way is blocked!");
       return;
     }
     if (map.tiles.at(dest) != Tiles::floor) {
-      world.log.append("That way is blocked!");
+      if (actor.id == 0) world.log.append("That way is blocked!");
       return;
     }
     for (auto& [other_id, other] : world.actors) {

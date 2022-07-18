@@ -13,7 +13,9 @@ inline auto kill(World& world, Actor& target) {
     world.log.append(fmt::format("You have died!"));
     g_state = std::make_unique<state::Dead>();
   } else {
-    world.log.append(fmt::format("The {} dies!", target.name));
+    if (world.active_map().visible.at(target.pos)) {
+      world.log.append(fmt::format("The {} dies!", target.name));
+    }
     world.actors.erase(target.id);
   }
 }
@@ -23,10 +25,13 @@ inline auto attack(World& world, Actor& self, Actor& target) {
   damage -= target.stats.defense;
   target.stats.hp -= damage;
   damage = std::max(0, damage);
-  if (damage > 0) {
-    world.log.append(fmt::format("{} attacks {} for {} hit points.", self.name, target.name, damage));
-  } else {
-    world.log.append(fmt::format("{} attacks {} but it has no effect!", self.name, target.name));
+  const auto& map = world.active_map();
+  if (map.visible.at(self.pos) || map.visible.at(target.pos)) {
+    if (damage > 0) {
+      world.log.append(fmt::format("{} attacks {} for {} hit points.", self.name, target.name, damage));
+    } else {
+      world.log.append(fmt::format("{} attacks {} but it has no effect!", self.name, target.name));
+    }
   }
   if (target.stats.hp <= 0) {
     kill(world, target);
