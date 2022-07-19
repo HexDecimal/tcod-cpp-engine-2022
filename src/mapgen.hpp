@@ -149,6 +149,15 @@ inline auto generate_level(World& world) -> Map& {
     if (map.tiles.at({x, y}) == Tiles::floor) floor_tiles.emplace_back(Position{x, y});
   });
 
+  auto& player = world.active_player();
+  player.pos = pop_random(floor_tiles, world.rng);
+  update_fov(map, player.pos);
+
+  // Remove tiles in FOV.
+  floor_tiles.erase(
+      std::remove_if(floor_tiles.begin(), floor_tiles.end(), [&](Position pos) { return map.visible.at(pos); }),
+      floor_tiles.end());
+
   for (int repeats{0}; repeats < 20; ++repeats) {
     auto& [monster_id, monster] = *new_actor(world);
     monster.pos = pop_random(floor_tiles, world.rng);
@@ -160,10 +169,6 @@ inline auto generate_level(World& world) -> Map& {
     monster.ai = std::make_unique<action::BasicAI>();
     world.schedule.push_back(monster_id);
   }
-
-  auto& player = world.active_player();
-  player.pos = pop_random(floor_tiles, world.rng);
-  update_fov(map, player.pos);
 
   return map;
 }
