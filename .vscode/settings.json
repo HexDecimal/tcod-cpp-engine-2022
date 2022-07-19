@@ -101,6 +101,7 @@
     "xtree": "cpp",
     "xutility": "cpp",
     "fstream": "cpp",
-    "*.rh": "cpp"
+    "*.rh": "cpp",
+    "variant": "cpp"
   }
 }

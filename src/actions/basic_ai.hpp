@@ -6,7 +6,7 @@
 namespace action {
 class BasicAI : public Action {
  public:
-  virtual void perform(World& world, Actor& actor) override {
+  [[nodiscard]] virtual Result perform(World& world, Actor& actor) override {
     Map& map = world.active_map();
     const auto can_see_player = map.visible.at(actor.pos);
     auto move_dir = world.active_player().pos - actor.pos;

@@ -81,8 +81,12 @@ class InGame : public State {
     return nullptr;
   }
   auto cmd_move(int dx, int dy) -> std::unique_ptr<State> {
-    action::Bump({dx, dy}).perform(*g_world, g_world->active_player());
-    enemy_turn(*g_world);
+    const auto result = action::Bump({dx, dy}).perform(*g_world, g_world->active_player());
+    if (std::holds_alternative<action::Failure>(result)) {
+      g_world->log.append(std::get<action::Failure>(result).reason);
+    } else {
+      enemy_turn(*g_world);
+    }
     return nullptr;
   }
   virtual auto on_draw() -> void override { render_all(g_console, *g_world); }

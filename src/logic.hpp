@@ -29,7 +29,12 @@ inline auto enemy_turn(World& world) -> void {
       continue;
     }
     auto& actor = actor_it->second;
-    if (actor.ai) actor.ai->perform(world, actor);
+    if (actor.ai) {
+      const auto result = actor.ai->perform(world, actor);
+      if (std::holds_alternative<action::Failure>(result)) {
+        fmt::print("AI failed action: {}\n", std::get<action::Failure>(result).reason);
+      }
+    }
     world.schedule.push_back(actor_id);
   }
 }

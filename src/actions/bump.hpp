@@ -10,26 +10,25 @@ class Bump : public Action {
  public:
   Bump() = default;
   Bump(Position dir) : dir_{dir} {}
-  virtual void perform(World& world, Actor& actor) override {
-    if (dir_ == Position{0, 0}) return;
+  [[nodiscard]] virtual Result perform(World& world, Actor& actor) override {
+    if (dir_ == Position{0, 0}) return Success{};
     const Position dest = actor.pos + dir_;
     Map& map = world.active_map();
     if (!map.tiles.in_bounds(dest)) {
-      if (actor.id == 0) world.log.append("That way is blocked!");
-      return;
+      return Failure{"That way is blocked!"};
     }
     if (map.tiles.at(dest) != Tiles::floor) {
-      if (actor.id == 0) world.log.append("That way is blocked!");
-      return;
+      return Failure{"That way is blocked!"};
     }
     for (auto& [other_id, other] : world.actors) {
       if (other.pos == dest) {
         combat::attack(world, actor, other);
-        return;
+        return Success{};
       }
     }
     actor.pos = dest;
     if (&actor == &world.active_player()) update_fov(map, actor.pos);
+    return Success{};
   };
 
  private:
