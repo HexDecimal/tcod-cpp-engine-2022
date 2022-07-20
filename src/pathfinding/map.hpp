@@ -11,7 +11,7 @@ using Index2 = Position;  // 2D coordinates.
 
 inline [[nodiscard]] auto setup_graph(const util::Array2D<int>& cost, int cardinal = 2, int diagonal = 3) {
   return [=, &cost](const Index2& xy, auto add_edge) {
-    auto check_add_edge = [&](int x, int y, int edge_cost) {
+    const auto check_add_edge = [&](int x, int y, int edge_cost) {
       if (!cost.in_bounds({x, y})) return;
       edge_cost *= cost.at({x, y});
       if (edge_cost <= 0) return;
@@ -27,16 +27,16 @@ inline [[nodiscard]] auto setup_graph(const util::Array2D<int>& cost, int cardin
 }
 
 inline [[nodiscard]] auto setup_set_edge(util::Array2D<int>& dist) {
-  return [&](Index2 dest, Index2 origin, int distance) -> bool {
-    auto next_dist = dist.at(origin) + distance;
+  return [&](Index2 dest, Index2 origin, int edge_distance) -> bool {
+    const auto next_dist = dist.at(origin) + edge_distance;
     if (dist.at(dest) <= next_dist) return false;
     dist.at(dest) = next_dist;
     return true;
   };
 }
 inline [[nodiscard]] auto setup_set_edge(util::Array2D<int>& dist, util::Array2D<Index2>& flow) {
-  return [&](Index2 dest, Index2 origin, int distance) -> bool {
-    auto next_dist = dist.at(origin) + distance;
+  return [&](Index2 dest, Index2 origin, int edge_distance) -> bool {
+    const auto next_dist = dist.at(origin) + edge_distance;
     if (dist.at(dest) <= next_dist) return false;
     dist.at(dest) = next_dist;
     flow.at(dest) = origin;

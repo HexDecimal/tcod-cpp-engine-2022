@@ -26,9 +26,9 @@ inline [[nodiscard]] auto get_astar2d_path(
   auto dist = util::Array2D<int>{cost.get_shape(), std::numeric_limits<int>::max()};
   dist.at(root) = 0;
   auto pathfinder = pf::Pathfinder<Index2>{};
-  auto heuristic = setup_heuristic(dist, goal, cardinal, diagonal);
+  const auto heuristic = setup_heuristic(dist, goal, cardinal, diagonal);
   pathfinder.add(root, heuristic);
-  auto is_goal = [&](Index2 pos) { return pos == goal; };
+  const auto is_goal = [&](Index2 pos) { return pos == goal; };
   pathfinder.compute(setup_graph(cost, cardinal, diagonal), heuristic, setup_set_edge(dist, flow), is_goal);
   return get_path(flow, goal);
 }
