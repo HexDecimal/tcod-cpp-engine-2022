@@ -6,7 +6,7 @@
 #include "map.hpp"
 
 namespace pf {
-inline [[nodiscard]] auto setup_heuristic(
+[[nodiscard]] inline auto setup_heuristic(
     const util::Array2D<int>& dist, const Index2 goal, int cardinal = 2, int diagonal = 3) {
   return [=, &dist](Index2 pos) {
     const int diff_x = std::abs(pos.x - goal.x);
@@ -19,7 +19,7 @@ inline [[nodiscard]] auto setup_heuristic(
 
 /// Return the path from root to goal using A*.
 /// The path returned begins at goal and ends at the root.
-inline [[nodiscard]] auto get_astar2d_path(
+[[nodiscard]] inline auto get_astar2d_path(
     const util::Array2D<int>& cost, Index2 root, Index2 goal, int cardinal = 2, int diagonal = 3)
     -> std::vector<Index2> {
   auto flow = new_flow_array(cost.get_shape());
