@@ -15,6 +15,7 @@ class BasicAI : public Action {
       auto cost = util::Array2D<int>{map.get_size()};
       with_indexes(map, [&](int x, int y) { return cost.at({x, y}) = map.tiles.at({x, y}) == Tiles::wall ? 0 : 1; });
       for (const auto& actor_iter : world.actors) cost.at(actor_iter.second.pos) += 10;
+      cost.at(player.pos) = 1;
       path_ = pf::get_astar2d_path(cost, actor.pos, player.pos);
     }
     if (path_.size() && path_.back() == actor.pos) path_.pop_back();
