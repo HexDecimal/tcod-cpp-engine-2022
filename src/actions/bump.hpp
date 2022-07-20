@@ -1,15 +1,23 @@
 #pragma once
 #include <fmt/core.h>
 
+#include <algorithm>
+
 #include "../combat.hpp"
 #include "../fov.hpp"
 #include "../types/position.hpp"
 #include "base.hpp"
+
 namespace action {
 class Bump : public Action {
  public:
   Bump() = default;
-  Bump(Position dir) : dir_{dir} {}
+  Bump(Position dir) : dir_{dir} {
+    assert(0 <= std::abs(dir_.x));
+    assert(std::abs(dir_.x) <= 1);
+    assert(0 <= std::abs(dir_.y));
+    assert(std::abs(dir_.y) <= 1);
+  }
   [[nodiscard]] virtual Result perform(World& world, Actor& actor) override {
     if (dir_ == Position{0, 0}) return Success{};
     const Position dest = actor.pos + dir_;
