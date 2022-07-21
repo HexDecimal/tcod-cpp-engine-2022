@@ -2,12 +2,12 @@
 #include <cassert>
 
 #include "../actions/bump.hpp"
+#include "../actions/pickup.hpp"
 #include "../fov.hpp"
 #include "../globals.hpp"
 #include "../mapgen.hpp"
 #include "../types/state.hpp"
 #include "../world_logic.hpp"
-
 
 namespace state {
 class InGame : public State {
@@ -63,6 +63,8 @@ class InGame : public State {
           case SDLK_KP_9:
           case SDLK_u:
             return cmd_move(1, -1);
+          case SDLK_g:
+            return do_action(action::Pickup{});
           case SDLK_F2:
             procgen::generate_level(*g_world);
             return nullptr;
@@ -81,11 +83,18 @@ class InGame : public State {
     }
     return nullptr;
   }
-  auto cmd_move(int dx, int dy) -> std::unique_ptr<State> {
-    const auto result = action::Bump({dx, dy}).perform(*g_world, g_world->active_player());
+  auto cmd_move(int dx, int dy) -> std::unique_ptr<State> { return do_action(action::Bump{{dx, dy}}); }
+  auto do_action(action::Action& my_action) -> std::unique_ptr<State> {
+    return after_action(my_action.perform(*g_world, g_world->active_player()));
+  }
+  auto do_action(action::Action&& my_action) -> std::unique_ptr<State> {
+    return after_action(my_action.perform(*g_world, g_world->active_player()));
+  }
+  auto after_action(action::Result result) -> std::unique_ptr<State> {
     if (std::holds_alternative<action::Failure>(result)) {
       g_world->log.append(std::get<action::Failure>(result).reason);
     } else {
+      update_fov(g_world->active_map(), g_world->active_player().pos);
       enemy_turn(*g_world);
     }
     return nullptr;

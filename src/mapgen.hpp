@@ -14,7 +14,6 @@
 #include "types/world.hpp"
 #include "world_logic.hpp"
 
-
 namespace procgen {
 /// Call func on the neighbors surrounding x, y.  This may go out of bounds.
 template <typename F, typename Adj = std::array<std::array<int, 2>, 8>>
@@ -153,6 +152,14 @@ inline auto generate_level(World& world) -> Map& {
   auto& player = world.active_player();
   player.pos = pop_random(floor_tiles, world.rng);
   update_fov(map, player.pos);
+
+  for (int repeats{0}; repeats < 5; ++repeats) {
+    auto new_item = Item{};
+    new_item.name = "health potion";
+    new_item.fg = tcod::ColorRGB{128, 21, 21};
+    new_item.ch = '!';
+    map.items.emplace(pop_random(floor_tiles, world.rng), new_item);
+  }
 
   // Remove tiles in FOV.
   floor_tiles.erase(

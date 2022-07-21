@@ -1,8 +1,11 @@
 #pragma once
 #include <cassert>
 #include <libtcod.hpp>
+#include <unordered_map>
 
+#include "item.hpp"
 #include "ndarray.hpp"
+#include "position.hpp"
 
 enum class Tiles {
   wall = 0,
@@ -23,4 +26,5 @@ struct Map {
   util::Array2D<Tiles> tiles;
   util::Array2D<bool> explored;
   util::Array2D<bool> visible;
+  std::unordered_multimap<Position, Item> items;
 };

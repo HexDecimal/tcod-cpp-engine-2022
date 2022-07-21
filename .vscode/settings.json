@@ -102,6 +102,7 @@
     "xutility": "cpp",
     "fstream": "cpp",
     "*.rh": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "cassert": "cpp"
   }
 }

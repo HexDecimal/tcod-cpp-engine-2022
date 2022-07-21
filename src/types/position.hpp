@@ -12,3 +12,7 @@ struct Position {
   int x;
   int y;
 };
+template <>
+struct std::hash<Position> {
+  std::size_t operator()(const Position& pos) const { return pos.x + pos.y * 97; }
+};

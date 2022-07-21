@@ -7,7 +7,6 @@
 #include "types/world.hpp"
 #include "world_logic.hpp"
 
-
 namespace combat {
 inline auto kill(World& world, Actor& target) {
   if (target.id == 0) {
@@ -38,4 +37,15 @@ inline auto attack(World& world, Actor& self, Actor& target) {
     kill(world, target);
   };
 }
+
+inline auto heal(World& world, Actor& target, int amount) {
+  amount = std::min(amount, target.stats.max_hp - target.stats.hp);
+  target.stats.hp += amount;
+  const auto& map = world.active_map();
+  if (map.visible.at(target.pos)) {
+    world.log.append(fmt::format("{} heals {} HP.", target.name, amount));
+  }
+  return amount;
+}
+
 }  // namespace combat

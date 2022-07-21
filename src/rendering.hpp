@@ -28,6 +28,13 @@ inline void render_map(tcod::Console& console, const Map& map, bool show_all = f
 inline void render_map(tcod::Console& console, const World& world) {
   const auto& map = world.active_map();
   render_map(console, map);
+  for (const auto& [item_pos, item] : map.items) {
+    if (!map.visible.in_bounds(item_pos)) continue;
+    if (!map.visible.at(item_pos)) continue;
+    if (!console.in_bounds(item_pos)) continue;
+    console.at(item_pos).ch = item.ch;
+    console.at(item_pos).fg = item.fg;
+  }
   for (const auto& [actor_id, actor] : world.actors) {
     if (!map.visible.in_bounds(actor.pos)) continue;
     if (!map.visible.at(actor.pos)) continue;
