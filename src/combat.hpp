@@ -2,10 +2,11 @@
 #include <fmt/core.h>
 
 #include "globals.hpp"
-#include "logic.hpp"
 #include "states/dead.hpp"
 #include "types/actor.hpp"
 #include "types/world.hpp"
+#include "world_logic.hpp"
+
 
 namespace combat {
 inline auto kill(World& world, Actor& target) {

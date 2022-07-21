@@ -4,9 +4,10 @@
 #include "../actions/bump.hpp"
 #include "../fov.hpp"
 #include "../globals.hpp"
-#include "../logic.hpp"
 #include "../mapgen.hpp"
 #include "../types/state.hpp"
+#include "../world_logic.hpp"
+
 
 namespace state {
 class InGame : public State {

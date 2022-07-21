@@ -7,12 +7,13 @@
 #include "actions/basic_ai.hpp"
 #include "constants.hpp"
 #include "fov.hpp"
-#include "logic.hpp"
 #include "maptools.hpp"
 #include "rendering.hpp"
 #include "types/map.hpp"
 #include "types/ndarray.hpp"
 #include "types/world.hpp"
+#include "world_logic.hpp"
+
 
 namespace procgen {
 /// Call func on the neighbors surrounding x, y.  This may go out of bounds.
