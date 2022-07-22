@@ -3,6 +3,7 @@
 
 #include "../actions/bump.hpp"
 #include "../actions/pickup.hpp"
+#include "../actions/use_item.hpp"
 #include "../fov.hpp"
 #include "../globals.hpp"
 #include "../mapgen.hpp"
@@ -65,6 +66,8 @@ class InGame : public State {
             return cmd_move(1, -1);
           case SDLK_g:
             return do_action(action::Pickup{});
+          case SDLK_i:
+            return do_action(action::UseItem{0});
           case SDLK_F2:
             procgen::generate_level(*g_world);
             return nullptr;
