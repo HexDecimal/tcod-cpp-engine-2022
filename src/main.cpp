@@ -13,6 +13,7 @@
 #include "mapgen.hpp"
 #include "rendering.hpp"
 #include "states/ingame.hpp"
+#include "world_init.hpp"
 
 #if defined(_MSC_VER)
 #pragma warning(disable : 4297)  // Allow "throw" in main().  Letting the compiler handle termination.
@@ -58,18 +59,7 @@ void main_init(int argc = 0, char** argv = nullptr) {
   g_context = tcod::Context(params);
 
   g_state = std::make_unique<state::InGame>();
-  g_world = std::make_unique<World>();
-  auto& player = g_world->actors.emplace(0, Actor{}).first->second;
-  player.name = "player";
-  player.ch = '@';
-  player.fg = {255, 255, 255};
-  player.stats.max_hp = player.stats.hp = 30;
-  player.stats.attack = 5;
-  player.stats.defense = 2;
-
-  g_world->schedule.emplace_back(0);
-
-  procgen::generate_level(*g_world);
+  g_world = new_world();
 }
 
 /// Main program entry point.
