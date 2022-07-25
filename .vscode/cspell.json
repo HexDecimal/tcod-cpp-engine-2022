@@ -29,6 +29,7 @@
     "lodepng",
     "lukka",
     "mkdir",
+    "MOUSEMOTION",
     "MSVC",
     "mymindstorm",
     "PAGEDOWN",
@@ -46,7 +47,8 @@
     "ustar",
     "vcpkg",
     "vsync",
-    "Wextra"
+    "Wextra",
+    "WINDOWEVENT"
   ],
   "ignoreWords": [],
   "import": [],

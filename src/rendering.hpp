@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include <fmt/core.h>
+#include <fmt/format.h>
 
 #include "constants.hpp"
 #include "globals.hpp"
@@ -40,6 +41,13 @@ inline void render_map(tcod::Console& console, const World& world) {
     if (!map.visible.at(actor.pos)) continue;
     if (console.in_bounds(actor.pos)) {
       console.at(actor.pos) = {actor.ch, actor.fg, tcod::ColorRGB{0, 0, 0}};
+    }
+  }
+  if (g_controller.mouse) {
+    auto& mouse_pos = *g_controller.mouse;
+    if (console.in_bounds(mouse_pos) && map.visible.in_bounds(mouse_pos)) {
+      auto& mouse_tile = console.at(mouse_pos);
+      mouse_tile = {mouse_tile.ch, tcod::ColorRGB{0, 0, 0}, tcod::ColorRGB{255, 255, 255}};
     }
   }
 }
@@ -81,6 +89,24 @@ inline void draw_bar(
   tcod::draw_rect(console, {x, y, bar_width, 1}, 0, {}, fill_color);
 }
 
+inline void render_mouse_look(tcod::Console& console, const World& world) {
+  if (!g_controller.mouse) return;
+  const auto& map = world.active_map();
+  if (!(map.visible.in_bounds(*g_controller.mouse) && map.visible.at(*g_controller.mouse))) return;
+  auto mouse_desc = std::vector<std::string>{};
+  for (const auto& [actor_id, actor] : world.actors) {
+    if (actor.pos == *g_controller.mouse) {
+      mouse_desc.emplace_back(actor.name);
+    }
+  }
+  tcod::print_rect(
+      console,
+      {1, 0, console.get_width() - 1, 1},
+      fmt::format("{}", fmt::join(mouse_desc, ", ")),
+      constants::TEXT_COLOR_DEFAULT,
+      {});
+}
+
 inline void render_gui(tcod::Console& console, const World& world) {
   const auto& player = world.active_player();
   const auto text_color = constants::WHITE;
@@ -98,6 +124,7 @@ inline void render_gui(tcod::Console& console, const World& world) {
   tcod::print_rect(
       console, {hp_x, hp_y, 20, 1}, fmt::format(" HP: {}/{}", player.stats.hp, player.stats.max_hp), text_color, {});
   render_log(console, world);
+  render_mouse_look(console, world);
 }
 
 inline void render_all(tcod::Console& console, const World& world) {
