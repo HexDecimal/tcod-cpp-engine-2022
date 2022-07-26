@@ -6,7 +6,7 @@
 
 namespace state {
 class Dead : public State {
-  virtual auto on_event(SDL_Event& event) -> std::unique_ptr<State> override {
+  virtual auto on_event(SDL_Event& event) -> StateReturnType override {
     assert(g_world);
     switch (event.type) {
       case SDL_QUIT:

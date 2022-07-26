@@ -9,10 +9,11 @@
 #include "../mapgen.hpp"
 #include "../types/state.hpp"
 #include "../world_logic.hpp"
+#include "pick_inventory.hpp"
 
 namespace state {
 class InGame : public State {
-  virtual auto on_event(SDL_Event& event) -> std::unique_ptr<State> override {
+  virtual auto on_event(SDL_Event& event) -> StateReturnType override {
     assert(g_world);
     assert(g_world->schedule.front() == 0);
     switch (event.type) {
@@ -67,7 +68,8 @@ class InGame : public State {
           case SDLK_g:
             return do_action(action::Pickup{});
           case SDLK_i:
-            return do_action(action::UseItem{0});
+            return std::make_unique<PickInventory>(
+                std::move(g_state), [](auto item_index) { return do_action(action::UseItem{item_index}); });
           case SDLK_F2:
             procgen::generate_level(*g_world);
             return nullptr;
@@ -97,22 +99,24 @@ class InGame : public State {
     }
     return nullptr;
   }
-  auto cmd_move(int dx, int dy) -> std::unique_ptr<State> { return do_action(action::Bump{{dx, dy}}); }
-  auto do_action(action::Action& my_action) -> std::unique_ptr<State> {
+  virtual auto on_draw() -> void override { render_all(g_console, *g_world); }
+
+ private:
+  static auto cmd_move(int dx, int dy) -> StateReturnType { return do_action(action::Bump{{dx, dy}}); }
+  static auto do_action(action::Action& my_action) -> StateReturnType {
     return after_action(my_action.perform(*g_world, g_world->active_player()));
   }
-  auto do_action(action::Action&& my_action) -> std::unique_ptr<State> {
+  static auto do_action(action::Action&& my_action) -> StateReturnType {
     return after_action(my_action.perform(*g_world, g_world->active_player()));
   }
-  auto after_action(action::Result result) -> std::unique_ptr<State> {
+  static auto after_action(action::Result result) -> StateReturnType {
     if (std::holds_alternative<action::Failure>(result)) {
       g_world->log.append(std::get<action::Failure>(result).reason);
     } else {
       update_fov(g_world->active_map(), g_world->active_player().pos);
       enemy_turn(*g_world);
     }
-    return nullptr;
+    return std::make_unique<InGame>();
   }
-  virtual auto on_draw() -> void override { render_all(g_console, *g_world); }
 };
 }  // namespace state
