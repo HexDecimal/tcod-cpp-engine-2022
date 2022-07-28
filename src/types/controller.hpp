@@ -5,5 +5,5 @@
 #include "position.hpp"
 
 struct Controller {
-  std::optional<Position> mouse = {};
+  std::optional<Position> cursor = {};
 };

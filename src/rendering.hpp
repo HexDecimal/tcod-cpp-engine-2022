@@ -43,11 +43,11 @@ inline void render_map(tcod::Console& console, const World& world) {
       console.at(actor.pos) = {actor.ch, actor.fg, tcod::ColorRGB{0, 0, 0}};
     }
   }
-  if (g_controller.mouse) {
-    auto& mouse_pos = *g_controller.mouse;
-    if (console.in_bounds(mouse_pos) && map.visible.in_bounds(mouse_pos)) {
-      auto& mouse_tile = console.at(mouse_pos);
-      mouse_tile = {mouse_tile.ch, tcod::ColorRGB{0, 0, 0}, tcod::ColorRGB{255, 255, 255}};
+  if (g_controller.cursor) {
+    auto& cursor = *g_controller.cursor;
+    if (console.in_bounds(cursor) && map.visible.in_bounds(cursor)) {
+      auto& cursor_tile = console.at(cursor);
+      cursor_tile = {cursor_tile.ch, tcod::ColorRGB{0, 0, 0}, tcod::ColorRGB{255, 255, 255}};
     }
   }
 }
@@ -90,26 +90,26 @@ inline void draw_bar(
 }
 
 inline void render_mouse_look(tcod::Console& console, const World& world) {
-  if (!g_controller.mouse) return;
+  if (!g_controller.cursor) return;
   const auto& map = world.active_map();
-  if (!(map.visible.in_bounds(*g_controller.mouse) && map.visible.at(*g_controller.mouse))) return;
-  auto mouse_desc = std::vector<std::string>{};
+  if (!(map.visible.in_bounds(*g_controller.cursor) && map.visible.at(*g_controller.cursor))) return;
+  auto cursor_desc = std::vector<std::string>{};
   for (const auto& [actor_id, actor] : world.actors) {
-    if (actor.pos == *g_controller.mouse) {
-      mouse_desc.emplace_back(actor.name);
+    if (actor.pos == *g_controller.cursor) {
+      cursor_desc.emplace_back(actor.name);
     }
   }
   {
-    const auto items_range = map.items.equal_range(*g_controller.mouse);
+    const auto items_range = map.items.equal_range(*g_controller.cursor);
     for (auto it{items_range.first}; it != items_range.second; ++it) {
       const auto& item = it->second;
-      mouse_desc.emplace_back(fmt::format("{} ({})", item.name, item.count));
+      cursor_desc.emplace_back(fmt::format("{} ({})", item.name, item.count));
     }
   }
   tcod::print_rect(
       console,
       {1, 0, console.get_width() - 1, 1},
-      fmt::format("{}", fmt::join(mouse_desc, ", ")),
+      fmt::format("{}", fmt::join(cursor_desc, ", ")),
       constants::TEXT_COLOR_DEFAULT,
       {});
 }

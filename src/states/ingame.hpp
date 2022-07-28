@@ -82,12 +82,12 @@ class InGame : public State {
       } break;
       case SDL_MOUSEMOTION:
         g_context.convert_event_coordinates(event);
-        g_controller.mouse = {event.motion.x, event.motion.y};
+        g_controller.cursor = {event.motion.x, event.motion.y};
         break;
       case SDL_WINDOWEVENT:
         switch (event.window.event) {
           case SDL_WINDOWEVENT_LEAVE:
-            g_controller.mouse = std::nullopt;
+            g_controller.cursor = std::nullopt;
             break;
         }
         break;
