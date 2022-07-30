@@ -33,6 +33,9 @@ inline auto enemy_turn(World& world) -> void {
       const auto result = actor.ai->perform(world, actor);
       if (std::holds_alternative<action::Failure>(result)) {
         fmt::print("AI failed action: {}\n", std::get<action::Failure>(result).reason);
+      } else if (std::holds_alternative<action::Success>(result)) {
+      } else {
+        assert(0);
       }
     }
     world.schedule.push_back(actor_id);

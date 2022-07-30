@@ -18,7 +18,7 @@ class PickInventory : public State {
       case SDL_KEYDOWN:
         switch (event.key.keysym.sym) {
           case SDLK_ESCAPE:
-            return std::move(parent_);
+            return Change{std::move(parent_)};
           default:
             auto sym = event.key.keysym.sym;
             if (SDLK_a <= sym && sym <= SDLK_z) {
@@ -33,7 +33,7 @@ class PickInventory : public State {
       default:
         break;
     }
-    return nullptr;
+    return {};
   }
   virtual auto on_draw() -> void override {
     parent_->on_draw();

@@ -3,6 +3,7 @@
 #endif  // __EMSCRIPTEN__
 #include <SDL.h>
 
+#include <cassert>
 #include <cstdlib>
 #include <iostream>
 #include <libtcod.hpp>
@@ -32,8 +33,19 @@ static void main_loop() {
 #endif
   while (SDL_PollEvent(&event)) {
     if (g_state) {
-      if (auto new_state = g_state->on_event(event); new_state) {
-        g_state = std::move(new_state);
+      auto result = g_state->on_event(event);
+      if (dynamic_cast<state::Dead*>(g_state.get())) {
+      } else if (std::holds_alternative<std::monostate>(result)) {
+      } else if (std::holds_alternative<state::Change>(result)) {
+        g_state = std::move(std::get<state::Change>(result).new_state);
+      } else if (std::holds_alternative<state::Reset>(result)) {
+        g_state = std::make_unique<state::InGame>();
+      } else if (std::holds_alternative<state::EndTurn>(result)) {
+        g_state = std::make_unique<state::InGame>();
+        update_fov(g_world->active_map(), g_world->active_player().pos);
+        enemy_turn(*g_world);
+      } else {
+        assert(0);
       }
     }
   }

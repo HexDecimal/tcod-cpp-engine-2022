@@ -15,7 +15,7 @@ class Dead : public State {
       default:
         break;
     }
-    return nullptr;
+    return {};
   }
   virtual auto on_draw() -> void override { render_all(g_console, *g_world); }
 };
