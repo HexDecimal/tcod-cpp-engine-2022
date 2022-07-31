@@ -48,23 +48,6 @@ class UseItem : public Action {
   };
 
  private:
-  /*
-   static auto consume_item(ActorID actor_id, Item& item) -> void {
-     auto actor_it = g_world->actors.find(actor_id);
-     if (actor_it == g_world->actors.end()) {
-       fmt::print("Could not consume item because actor is missing.");
-       return;
-     }
-     auto& actor = actor_it->second;
-     auto item_id = &item - actor.stats.inventory.data();
-     assert(item_id >= 0 && static_cast<size_t>(item_id) < actor.stats.inventory.size());
-     assert(item.count > 0);
-     --item.count;
-     if (item.count <= 0) {
-       actor.stats.inventory.erase(actor.stats.inventory.begin() + item_id);
-     }
-   }
-   */
   int item_index_ = 0;
 };
 
