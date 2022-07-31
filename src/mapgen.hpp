@@ -7,6 +7,7 @@
 #include "actions/basic_ai.hpp"
 #include "constants.hpp"
 #include "fov.hpp"
+#include "items/health_potion.hpp"
 #include "maptools.hpp"
 #include "rendering.hpp"
 #include "types/map.hpp"
@@ -153,12 +154,8 @@ inline auto generate_level(World& world) -> Map& {
   player.pos = pop_random(floor_tiles, world.rng);
   update_fov(map, player.pos);
 
-  for (int repeats{0}; repeats < 5; ++repeats) {
-    auto new_item = Item{};
-    new_item.name = "health potion";
-    new_item.fg = tcod::ColorRGB{128, 21, 21};
-    new_item.ch = '!';
-    map.items.emplace(pop_random(floor_tiles, world.rng), new_item);
+  for (int repeats{0}; repeats < 50; ++repeats) {
+    map.items.emplace(pop_random(floor_tiles, world.rng), std::make_unique<HealthPotion>());
   }
 
   // Remove tiles in FOV.

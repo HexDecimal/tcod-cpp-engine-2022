@@ -33,8 +33,9 @@ inline void render_map(tcod::Console& console, const World& world) {
     if (!map.visible.in_bounds(item_pos)) continue;
     if (!map.visible.at(item_pos)) continue;
     if (!console.in_bounds(item_pos)) continue;
-    console.at(item_pos).ch = item.ch;
-    console.at(item_pos).fg = item.fg;
+    const auto& [item_ch, item_fg] = item->get_graphic();
+    console.at(item_pos).ch = item_ch;
+    console.at(item_pos).fg = item_fg;
   }
   for (const auto& [actor_id, actor] : world.actors) {
     if (!map.visible.in_bounds(actor.pos)) continue;
@@ -99,13 +100,14 @@ inline void render_mouse_look(tcod::Console& console, const World& world) {
       cursor_desc.emplace_back(actor.name);
     }
   }
+  /*
   {
     const auto items_range = map.items.equal_range(*g_controller.cursor);
     for (auto it{items_range.first}; it != items_range.second; ++it) {
       const auto& item = it->second;
-      cursor_desc.emplace_back(fmt::format("{} ({})", item.name, item.count));
+      cursor_desc.emplace_back(fmt::format("{} ({})", item->get_name(), item->count));
     }
-  }
+  }*/
   tcod::print_rect(
       console,
       {1, 0, console.get_width() - 1, 1},

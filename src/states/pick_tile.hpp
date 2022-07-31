@@ -15,7 +15,7 @@ class PickTile : public State {
     assert(g_world);
     if (const auto dir = get_dir_from(event); dir) {
       if (!g_controller.cursor) g_controller.cursor = g_world->active_player().pos;
-      const auto map = g_world->active_map();
+      const auto& map = g_world->active_map();
       auto new_cursor = *g_controller.cursor + *dir;
       if (!map.tiles.in_bounds({new_cursor.x, g_controller.cursor->y})) new_cursor.x = g_controller.cursor->x;
       if (!map.tiles.in_bounds({g_controller.cursor->x, new_cursor.y})) new_cursor.y = g_controller.cursor->y;

@@ -54,7 +54,8 @@ class PickInventory : public State {
       int shortcut = 'a';
       int y = 1;
       for (const auto& item : g_world->active_player().stats.inventory) {
-        tcod::print(console, {1, y++}, fmt::format("({:c}) {} ({})", shortcut++, item.name, item.count), {}, {});
+        tcod::print(
+            console, {1, y++}, fmt::format("({:c}) {} ({})", shortcut++, item->get_name(), item->count), {}, {});
       }
     } else {
       tcod::print(console, {1, 1}, "You have no items.", {}, {});

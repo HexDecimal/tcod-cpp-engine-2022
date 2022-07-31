@@ -8,5 +8,5 @@ struct Stats {
   int hp;
   int attack;
   int defense;
-  std::vector<Item> inventory;
+  std::vector<std::unique_ptr<Item>> inventory;
 };

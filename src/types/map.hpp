@@ -26,5 +26,5 @@ struct Map {
   util::Array2D<Tiles> tiles;
   util::Array2D<bool> explored;
   util::Array2D<bool> visible;
-  std::unordered_multimap<Position, Item> items;
+  std::unordered_multimap<Position, std::unique_ptr<Item>> items;
 };

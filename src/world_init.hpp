@@ -17,7 +17,9 @@ inline auto new_world() -> std::unique_ptr<World> {
   player.stats.attack = 5;
   player.stats.defense = 2;
 
-  player.stats.inventory.emplace_back(Item{"scroll of lightning bolt", '#', tcod::ColorRGB{TCODColor::lightYellow}});
+  // player.stats.inventory.emplace_back(Item{"scroll of lightning bolt", '#', tcod::ColorRGB{TCODColor::lightYellow}});
+  // player.stats.inventory.emplace_back(Item{"scroll of fireball", '#', tcod::ColorRGB{TCODColor::lightYellow}});
+  // player.stats.inventory.emplace_back(Item{"scroll of confusion", '#', tcod::ColorRGB{TCODColor::lightYellow}});
 
   world->schedule.emplace_back(0);
 
