@@ -20,7 +20,8 @@ struct LightningScroll : public Item {
     const auto is_not_player_and_visible = [&](const Actor& other) {
       return other.id != actor.id && map.visible.at(other.pos);
     };
-    Actor* target = get_closest_actor(world, actor.pos, euclidean_squared, is_not_player_and_visible, range_squared);
+    const auto distance_function = [](Position vec) { return euclidean_squared(vec); };
+    Actor* target = get_closest_actor(world, actor.pos, distance_function, is_not_player_and_visible, range_squared);
     if (!target) return action::Failure{"No enemy is close enough to strike."};
 
     const int damage = combat::calculate_damage(world, *target, atk_damage);
