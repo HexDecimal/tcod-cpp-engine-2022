@@ -20,11 +20,21 @@ inline auto kill(World& world, Actor& target) {
   }
 }
 
-inline auto attack(World& world, Actor& self, Actor& target) {
-  auto damage = self.stats.attack;
-  damage -= target.stats.defense;
+inline auto apply_damage(World& world, Actor& target, int damage) {
   target.stats.hp -= damage;
+  if (target.stats.hp <= 0) {
+    kill(world, target);
+  };
+}
+
+inline auto calculate_damage(World&, Actor& target, int damage) -> int {
+  damage -= target.stats.defense;
   damage = std::max(0, damage);
+  return damage;
+}
+
+inline auto attack(World& world, Actor& self, Actor& target) {
+  const auto damage = calculate_damage(world, target, self.stats.attack);
   const auto& map = world.active_map();
   if (map.visible.at(self.pos) || map.visible.at(target.pos)) {
     if (damage > 0) {
@@ -33,9 +43,7 @@ inline auto attack(World& world, Actor& self, Actor& target) {
       world.log.append(fmt::format("{} attacks {} but it has no effect!", self.name, target.name));
     }
   }
-  if (target.stats.hp <= 0) {
-    kill(world, target);
-  };
+  apply_damage(world, target, damage);
 }
 
 inline auto heal(World& world, Actor& target, int amount) {

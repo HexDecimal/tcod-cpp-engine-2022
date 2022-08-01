@@ -41,3 +41,23 @@ inline auto enemy_turn(World& world) -> void {
     world.schedule.push_back(actor_id);
   }
 }
+/// Return a pointer to the actor closest to `pos`.
+template <typename DistType = int, typename DistFunc, typename ValidActorFunc>
+inline auto get_closest_actor(
+    World& world,
+    Position pos,
+    const DistFunc distance_function,
+    const ValidActorFunc is_valid_actor = [](Actor&) -> bool { return true; },
+    DistType max_distance = std::numeric_limits<DistType>::max()) {
+  Actor* best_actor = nullptr;
+  DistType best_distance = max_distance;
+  for (auto& [actor_id, actor] : world.actors) {
+    if (!is_valid_actor(actor)) continue;
+    const DistType new_distance = distance_function(actor.pos - pos);
+    if (new_distance < best_distance) {
+      best_distance = new_distance;
+      best_actor = &actor;
+    }
+  }
+  return best_actor;
+}

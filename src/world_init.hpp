@@ -1,6 +1,7 @@
 #pragma once
 #include <fmt/core.h>
 
+#include "items/scroll_lightning.hpp"
 #include "mapgen.hpp"
 #include "types/actor.hpp"
 #include "types/world.hpp"
@@ -16,6 +17,8 @@ inline auto new_world() -> std::unique_ptr<World> {
   player.stats.max_hp = player.stats.hp = 30;
   player.stats.attack = 5;
   player.stats.defense = 2;
+
+  player.stats.inventory.emplace_back(std::make_unique<LightningScroll>());
 
   // player.stats.inventory.emplace_back(Item{"scroll of lightning bolt", '#', tcod::ColorRGB{TCODColor::lightYellow}});
   // player.stats.inventory.emplace_back(Item{"scroll of fireball", '#', tcod::ColorRGB{TCODColor::lightYellow}});

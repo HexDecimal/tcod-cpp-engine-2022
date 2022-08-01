@@ -154,7 +154,7 @@ inline auto generate_level(World& world) -> Map& {
   player.pos = pop_random(floor_tiles, world.rng);
   update_fov(map, player.pos);
 
-  for (int repeats{0}; repeats < 50; ++repeats) {
+  for (int repeats{0}; repeats < 5; ++repeats) {
     map.items.emplace(pop_random(floor_tiles, world.rng), std::make_unique<HealthPotion>());
   }
 

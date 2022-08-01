@@ -10,6 +10,7 @@
     "buildsystems",
     "buildtrees",
     "CHAINLOAD",
+    "chebyshev",
     "choosealicense",
     "CMAKE",
     "COMPILEDVERSION",

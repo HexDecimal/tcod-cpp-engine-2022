@@ -2,6 +2,7 @@
 
 #include <fmt/core.h>
 
+#include "../combat.hpp"
 #include "../item_tools.hpp"
 #include "../types/actor.hpp"
 #include "../types/item.hpp"
