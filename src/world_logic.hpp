@@ -1,6 +1,7 @@
 #pragma once
 #include <fmt/core.h>
 
+#include "distance.hpp"
 #include "types/actor.hpp"
 #include "types/world.hpp"
 
@@ -43,7 +44,7 @@ inline auto enemy_turn(World& world) -> void {
 }
 /// Return a pointer to the actor closest to `pos`.
 template <typename DistType = int, typename DistFunc, typename ValidActorFunc>
-inline auto get_closest_actor(
+inline auto get_nearest_actor(
     World& world,
     Position pos,
     const DistFunc distance_function,
@@ -60,4 +61,14 @@ inline auto get_closest_actor(
     }
   }
   return best_actor;
+}
+
+template <typename ValidActorFunc>
+inline auto get_nearest_actor(
+    World& world,
+    Position pos,
+    const ValidActorFunc is_valid_actor,
+    int max_distance_squared = std::numeric_limits<int>::max()) {
+  const auto dist_func = [](Position pos) { return euclidean_squared(pos); };
+  return get_nearest_actor(world, pos, dist_func, is_valid_actor, max_distance_squared);
 }
