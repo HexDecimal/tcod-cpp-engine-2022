@@ -158,6 +158,8 @@ inline auto generate_level(World& world) -> Map& {
 
   for (int repeats{0}; repeats < 5; ++repeats) {
     map.items.emplace(pop_random(floor_tiles, world.rng), std::make_unique<HealthPotion>());
+  }
+  for (int repeats{0}; repeats < 2; ++repeats) {
     map.items.emplace(pop_random(floor_tiles, world.rng), std::make_unique<LightningScroll>());
     map.items.emplace(pop_random(floor_tiles, world.rng), std::make_unique<FireballScroll>());
   }
