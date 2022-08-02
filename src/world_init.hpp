@@ -19,8 +19,10 @@ inline auto new_world() -> std::unique_ptr<World> {
   player.stats.attack = 5;
   player.stats.defense = 2;
 
+#ifndef NDEBUG
   player.stats.inventory.emplace_back(std::make_unique<LightningScroll>());
   player.stats.inventory.emplace_back(std::make_unique<FireballScroll>());
+#endif  // NDEBUG
 
   // player.stats.inventory.emplace_back(Item{"scroll of lightning bolt", '#', tcod::ColorRGB{TCODColor::lightYellow}});
   // player.stats.inventory.emplace_back(Item{"scroll of fireball", '#', tcod::ColorRGB{TCODColor::lightYellow}});
