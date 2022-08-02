@@ -103,6 +103,7 @@
     "fstream": "cpp",
     "*.rh": "cpp",
     "variant": "cpp",
-    "cassert": "cpp"
+    "cassert": "cpp",
+    "valarray": "cpp"
   }
 }

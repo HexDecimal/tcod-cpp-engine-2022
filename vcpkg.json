@@ -6,6 +6,7 @@
     "fmt",
     "glad",
     "lodepng-c",
+    "nlohmann-json",
     "sdl2",
     {
       "name": "sdl2",
