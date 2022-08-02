@@ -1,6 +1,8 @@
 #pragma once
+#include "../distance.hpp"
 #include "../pathfinding/astar.hpp"
 #include "../types/position.hpp"
+#include "ai_confused.hpp"
 #include "base.hpp"
 #include "bump.hpp"
 
@@ -8,8 +10,12 @@ namespace action {
 class BasicAI : public Action {
  public:
   [[nodiscard]] virtual Result perform(World& world, Actor& actor) override {
-    Map& map = world.active_map();
-    auto& player = world.active_player();
+    if (actor.stats.confused_turns) {
+      --actor.stats.confused_turns;
+      return ConfusedAI{}.perform(world, actor);
+    }
+    const Map& map = world.active_map();
+    const auto& player = world.active_player();
     const auto can_see_player = map.visible.at(actor.pos);
     if (can_see_player) {
       auto cost = util::Array2D<int>{map.get_size()};
@@ -20,7 +26,11 @@ class BasicAI : public Action {
     }
     if (path_.size() && path_.back() == actor.pos) path_.pop_back();
     if (path_.size()) {
-      auto move_dir = path_.back() - actor.pos;
+      const auto move_dir = path_.back() - actor.pos;
+      if (chebyshev(move_dir) > 1) {
+        path_.clear();
+        return Success{};
+      }
       return Bump(move_dir).perform(world, actor);
     }
     return Success{};

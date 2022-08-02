@@ -9,4 +9,5 @@ struct Stats {
   int attack;
   int defense;
   std::vector<std::unique_ptr<Item>> inventory;
+  int confused_turns = 0;
 };

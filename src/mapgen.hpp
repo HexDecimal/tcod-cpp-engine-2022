@@ -4,10 +4,11 @@
 
 #include <random>
 
-#include "actions/basic_ai.hpp"
+#include "actions/ai_basic.hpp"
 #include "constants.hpp"
 #include "fov.hpp"
 #include "items/health_potion.hpp"
+#include "items/scroll_confusion.hpp"
 #include "items/scroll_fireball.hpp"
 #include "items/scroll_lightning.hpp"
 #include "maptools.hpp"
@@ -162,6 +163,7 @@ inline auto generate_level(World& world) -> Map& {
   for (int repeats{0}; repeats < 2; ++repeats) {
     map.items.emplace(pop_random(floor_tiles, world.rng), std::make_unique<LightningScroll>());
     map.items.emplace(pop_random(floor_tiles, world.rng), std::make_unique<FireballScroll>());
+    map.items.emplace(pop_random(floor_tiles, world.rng), std::make_unique<ConfusionScroll>());
   }
 
   // Remove tiles in FOV.

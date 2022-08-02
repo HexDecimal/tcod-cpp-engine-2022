@@ -1,6 +1,7 @@
 #pragma once
 #include <fmt/core.h>
 
+#include "items/scroll_confusion.hpp"
 #include "items/scroll_fireball.hpp"
 #include "items/scroll_lightning.hpp"
 #include "mapgen.hpp"
@@ -22,6 +23,7 @@ inline auto new_world() -> std::unique_ptr<World> {
 #ifndef NDEBUG
   player.stats.inventory.emplace_back(std::make_unique<LightningScroll>());
   player.stats.inventory.emplace_back(std::make_unique<FireballScroll>());
+  player.stats.inventory.emplace_back(std::make_unique<ConfusionScroll>());
 #endif  // NDEBUG
 
   // player.stats.inventory.emplace_back(Item{"scroll of lightning bolt", '#', tcod::ColorRGB{TCODColor::lightYellow}});

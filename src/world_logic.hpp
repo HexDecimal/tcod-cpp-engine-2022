@@ -72,3 +72,19 @@ inline auto get_nearest_actor(
   const auto dist_func = [](Position pos) { return euclidean_squared(pos); };
   return get_nearest_actor(world, pos, dist_func, is_valid_actor, max_distance_squared);
 }
+
+/// Return a pointer to an Actor at `pos` if it exists.
+inline auto actor_at(World& world, Position pos) -> Actor* {
+  for (auto& [actor_id, actor] : world.actors) {
+    if (actor.pos == pos) return &actor;
+  };
+  return nullptr;
+}
+
+/// Call function (Actor&) -> void on any actors at `pos`.
+template <typename WithActorFunc>
+inline auto with_actors_at(World& world, Position pos, const WithActorFunc function) {
+  for (auto& [actor_id, actor] : world.actors) {
+    if (actor.pos == pos) function(actor);
+  };
+}
