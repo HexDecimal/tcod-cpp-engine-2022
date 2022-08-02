@@ -39,8 +39,10 @@ static void main_loop() {
       } else if (std::holds_alternative<state::Change>(result)) {
         g_state = std::move(std::get<state::Change>(result).new_state);
       } else if (std::holds_alternative<state::Reset>(result)) {
+        g_controller.cursor = std::nullopt;
         g_state = std::make_unique<state::InGame>();
       } else if (std::holds_alternative<state::EndTurn>(result)) {
+        g_controller.cursor = std::nullopt;
         g_state = std::make_unique<state::InGame>();
         update_fov(g_world->active_map(), g_world->active_player().pos);
         enemy_turn(*g_world);

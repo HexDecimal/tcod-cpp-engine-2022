@@ -18,9 +18,13 @@ struct ConfusionScroll : public Item {
   [[nodiscard]] virtual action::Result use_item(World& world, Actor& actor) {
     auto on_pick = [&](Position target_pos) -> state::Result {
       const auto& map = world.active_map();
-      if (!map.visible.in_bounds(target_pos) || map.visible.at(target_pos)) return state::Reset{};
+      if (!map.visible.in_bounds(target_pos) || !map.visible.at(target_pos)) {
+        world.log.append("You can't see anything there!");
+        return state::Reset{};
+      }
       bool hit_target = false;
       with_actors_at(world, target_pos, [&](Actor& target) {
+        if (&target == &actor) return;
         hit_target = true;
         world.log.append(fmt::format("The eyes of the {} look vacant,\nas he starts to stumble around!", target.name));
         target.stats.confused_turns = std::max(target.stats.confused_turns, confuse_turns);
