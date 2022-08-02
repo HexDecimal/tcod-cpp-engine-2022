@@ -8,6 +8,8 @@
 #include "constants.hpp"
 #include "fov.hpp"
 #include "items/health_potion.hpp"
+#include "items/scroll_fireball.hpp"
+#include "items/scroll_lightning.hpp"
 #include "maptools.hpp"
 #include "rendering.hpp"
 #include "types/map.hpp"
@@ -156,6 +158,8 @@ inline auto generate_level(World& world) -> Map& {
 
   for (int repeats{0}; repeats < 5; ++repeats) {
     map.items.emplace(pop_random(floor_tiles, world.rng), std::make_unique<HealthPotion>());
+    map.items.emplace(pop_random(floor_tiles, world.rng), std::make_unique<LightningScroll>());
+    map.items.emplace(pop_random(floor_tiles, world.rng), std::make_unique<FireballScroll>());
   }
 
   // Remove tiles in FOV.
