@@ -25,8 +25,8 @@ struct LightningScroll : public Item {
 
     const int damage = combat::calculate_damage(world, *target, atk_damage);
     world.log.append(fmt::format(
-        "A lighting bolt strikes the %s with a loud thunder!\n"
-        "The damage is %g hit points.",
+        "A lighting bolt strikes the {} with a loud thunder!\n"
+        "The damage is {} hit points.",
         target->name,
         damage));
     combat::apply_damage(world, *target, damage);
