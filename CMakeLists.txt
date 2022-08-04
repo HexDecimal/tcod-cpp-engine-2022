@@ -39,6 +39,7 @@ endif()
 if (EMSCRIPTEN)
     # Attach data folder to Emscripten builds.
     target_link_options(${PROJECT_NAME} PRIVATE --preload-file "${CMAKE_CURRENT_SOURCE_DIR}/data@data")
+    target_link_options(${PROJECT_NAME} PRIVATE -lidbfs.js)  # Enable IDBFS (browser file system.)
     configure_file(
         ${PROJECT_SOURCE_DIR}/emscripten/index.html
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/index.html

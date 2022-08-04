@@ -124,3 +124,4 @@ build
 # Save data
 *.sav
 save.json
+saves/

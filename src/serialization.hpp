@@ -1,7 +1,11 @@
 #pragma once
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif  // __EMSCRIPTEN__
 
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <libtcod/color.hpp>
 #include <nlohmann/json.hpp>
 
@@ -157,12 +161,39 @@ inline auto save_world(const World& world, std::filesystem::path path) -> void {
   data["world"] = world;
   std::ofstream f{path};
   f << data << "\n";
+  std::cout << "Game saved.\n";
+#ifdef __EMSCRIPTEN__
+  // clang-format off
+  EM_ASM(
+    FS.syncfs(false, function (err) {
+      assert(!err);
+      console.log("SyncFS finished.");
+    });
+  );
+  // clang-format on
+#endif
 }
 
 inline auto load_world(std::filesystem::path path) -> std::unique_ptr<World> {
-  std::fstream f{path};
-  json data = json::parse(f);
-  std::unique_ptr<World> world = std::make_unique<World>();
-  data.at("world").get_to(*world);
-  return world;
+  if (!std::filesystem::exists(path)) {
+    std::cerr << "Save file does not exist:\n" << path << "\n";
+    return nullptr;
+  }
+  try {
+    std::fstream f{path};
+    json data = json::parse(f);
+    std::unique_ptr<World> world = std::make_unique<World>();
+    data.at("world").get_to(*world);
+    return world;
+  } catch (const std::exception& exc) {
+    std::cerr << "Failed to load world:\n" << exc.what() << "\n";
+  }
+  return nullptr;
 }
+
+inline auto save_world(const World& world) -> void {
+  std::filesystem::create_directories("saves");
+  return save_world(world, "saves/save.json");
+}
+
+inline auto load_world() -> std::unique_ptr<World> { return load_world("saves/save.json"); }

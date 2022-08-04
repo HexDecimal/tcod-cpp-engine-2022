@@ -19,6 +19,10 @@
 #include "states/main_menu.hpp"
 #include "world_init.hpp"
 
+#ifndef EMSCRIPTEN_KEEPALIVE
+#define EMSCRIPTEN_KEEPALIVE
+#endif
+
 #if defined(_MSC_VER)
 #pragma warning(disable : 4297)  // Allow "throw" in main().  Letting the compiler handle termination.
 #endif
@@ -53,13 +57,18 @@ static void main_loop() {
           g_state = std::make_unique<state::Dead>();
         }
       } else if (std::holds_alternative<state::Quit>(result)) {
-        if (g_world) save_world(*g_world, "save.json");
+        if (g_world) save_world(*g_world);
         std::exit(EXIT_SUCCESS);
       } else {
         assert(0);
       }
     }
   }
+}
+
+extern "C" void EMSCRIPTEN_KEEPALIVE after_main_init() {
+  g_world = load_world();
+  g_state = std::make_unique<state::MainMenu>();
 }
 
 // Main initialization code.
@@ -81,17 +90,20 @@ void main_init(int argc = 0, char** argv = nullptr) {
 
   g_context = tcod::Context(params);
 
-  g_world = nullptr;
-  if (auto save_path = "save.json"; std::filesystem::exists(save_path)) {
-    try {
-      g_world = load_world(save_path);
-    } catch (const std::exception& exc) {
-      std::cerr << "Failed to load world:\n" << exc.what() << "\n";
-      throw;
-    }
-  }
-
-  g_state = std::make_unique<state::MainMenu>();
+#ifdef __EMSCRIPTEN__
+  // clang-format off
+  EM_ASM(
+    FS.mkdir('/saves');
+    FS.mount(IDBFS, {}, '/saves');
+    FS.syncfs(true, function (err) {
+      assert(!err);
+      ccall('after_main_init', null);
+    });
+  );
+  // clang-format on
+#else
+  after_main_init();
+#endif
 }
 
 /// Main program entry point.

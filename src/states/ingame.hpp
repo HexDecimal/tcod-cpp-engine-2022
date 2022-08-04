@@ -38,7 +38,7 @@ class InGame : public State {
             for (auto&& it : g_world->active_map().explored) it = true;
             return {};
           case SDLK_ESCAPE:
-            save_world(*g_world, "save.json");
+            save_world(*g_world);
             return Change{std::make_unique<MainMenu>()};
           default:
             break;

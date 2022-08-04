@@ -14,7 +14,7 @@ class Dead : public State {
       case SDL_KEYDOWN:
         switch (event.key.keysym.sym) {
           case SDLK_ESCAPE:
-            std::filesystem::remove("save.json");
+            std::filesystem::remove("saves/save.json");
             g_world = nullptr;
             return Change{std::make_unique<MainMenu>()};
             break;
@@ -23,7 +23,7 @@ class Dead : public State {
         }
         break;
       case SDL_QUIT:
-        std::filesystem::remove("save.json");
+        std::filesystem::remove("saves/save.json");
         return Quit{};
       default:
         break;
