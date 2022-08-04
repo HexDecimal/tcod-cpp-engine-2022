@@ -5,6 +5,7 @@
 
 #include <cassert>
 #include <cstdlib>
+#include <filesystem>
 #include <iostream>
 #include <libtcod.hpp>
 
@@ -13,6 +14,7 @@
 #include "globals.hpp"
 #include "mapgen.hpp"
 #include "rendering.hpp"
+#include "serialization.hpp"
 #include "states/ingame.hpp"
 #include "states/main_menu.hpp"
 #include "world_init.hpp"
@@ -74,6 +76,15 @@ void main_init(int argc = 0, char** argv = nullptr) {
   g_context = tcod::Context(params);
 
   g_world = nullptr;
+  if (auto save_path = "save.json"; std::filesystem::exists(save_path)) {
+    try {
+      g_world = load_world(save_path);
+    } catch (const std::exception& exc) {
+      std::cerr << "Failed to load world:\n" << exc.what() << "\n";
+      throw;
+    }
+  }
+
   g_state = std::make_unique<state::MainMenu>();
 }
 

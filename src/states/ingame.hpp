@@ -8,6 +8,7 @@
 #include "../globals.hpp"
 #include "../input_tools.hpp"
 #include "../mapgen.hpp"
+#include "../serialization.hpp"
 #include "../types/state.hpp"
 #include "../world_logic.hpp"
 #include "main_menu.hpp"
@@ -37,6 +38,7 @@ class InGame : public State {
             for (auto&& it : g_world->active_map().explored) it = true;
             return {};
           case SDLK_ESCAPE:
+            save_world(*g_world, "save.json");
             return Change{std::make_unique<MainMenu>()};
           default:
             break;

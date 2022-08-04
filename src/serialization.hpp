@@ -1,6 +1,8 @@
 #pragma once
 
-#include <libtcod.hpp>
+#include <filesystem>
+#include <fstream>
+#include <libtcod/color.hpp>
 #include <nlohmann/json.hpp>
 
 #include "actions/ai_basic.hpp"
@@ -148,4 +150,19 @@ inline void from_json(const json& j, World& world) {
   std::stringstream{j.at("rng").get<std::string>()} >> world.rng;
   j.at("schedule").get_to(world.schedule);
   j.at("log").get_to(world.log);
+}
+
+inline auto save_world(const World& world, std::filesystem::path path) -> void {
+  json data{};
+  data["world"] = world;
+  std::ofstream f{path};
+  f << data << "\n";
+}
+
+inline auto load_world(std::filesystem::path path) -> std::unique_ptr<World> {
+  std::fstream f{path};
+  json data = json::parse(f);
+  std::unique_ptr<World> world = std::make_unique<World>();
+  data.at("world").get_to(*world);
+  return world;
 }
