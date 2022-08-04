@@ -10,6 +10,7 @@
 #include "../mapgen.hpp"
 #include "../types/state.hpp"
 #include "../world_logic.hpp"
+#include "main_menu.hpp"
 #include "pick_inventory.hpp"
 
 namespace state {
@@ -35,6 +36,8 @@ class InGame : public State {
           case SDLK_F3:
             for (auto&& it : g_world->active_map().explored) it = true;
             return {};
+          case SDLK_ESCAPE:
+            return Change{std::make_unique<MainMenu>()};
           default:
             break;
         }

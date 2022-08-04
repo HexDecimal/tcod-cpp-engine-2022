@@ -14,6 +14,7 @@
 #include "mapgen.hpp"
 #include "rendering.hpp"
 #include "states/ingame.hpp"
+#include "states/main_menu.hpp"
 #include "world_init.hpp"
 
 #if defined(_MSC_VER)
@@ -72,8 +73,8 @@ void main_init(int argc = 0, char** argv = nullptr) {
 
   g_context = tcod::Context(params);
 
-  g_state = std::make_unique<state::InGame>();
-  g_world = new_world();
+  g_world = nullptr;
+  g_state = std::make_unique<state::MainMenu>();
 }
 
 /// Main program entry point.
