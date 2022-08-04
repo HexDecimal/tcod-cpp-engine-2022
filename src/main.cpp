@@ -1,5 +1,6 @@
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
+#include <emscripten/emscripten.h>
+#include <emscripten/html5.h>
 #endif  // __EMSCRIPTEN__
 #include <SDL.h>
 
@@ -71,6 +72,11 @@ extern "C" void EMSCRIPTEN_KEEPALIVE after_main_init() {
   g_state = std::make_unique<state::MainMenu>();
 }
 
+extern "C" const char* EMSCRIPTEN_KEEPALIVE on_page_unload(int, const void*, void*) {
+  if (g_world) save_world(*g_world);
+  return nullptr;
+}
+
 // Main initialization code.
 void main_init(int argc = 0, char** argv = nullptr) {
   auto params = TCOD_ContextParams{};
@@ -112,6 +118,7 @@ int main(int argc, char** argv) {
     main_init(argc, argv);
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(main_loop, 0, 0);
+    emscripten_set_beforeunload_callback(nullptr, on_page_unload);
 #else
     while (true) main_loop();
 #endif
