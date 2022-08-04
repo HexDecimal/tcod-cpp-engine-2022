@@ -9,6 +9,7 @@ struct Change {
 };
 struct Reset {};
 struct EndTurn {};
+struct Quit {};
 
-using Result = std::variant<std::monostate, Change, Reset, EndTurn>;
+using Result = std::variant<std::monostate, Change, Reset, EndTurn, Quit>;
 }  // namespace state

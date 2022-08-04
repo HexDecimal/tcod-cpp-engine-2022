@@ -50,8 +50,7 @@ class PickTile : public State {
         }
         break;
       case SDL_QUIT:
-        std::exit(EXIT_SUCCESS);
-        break;
+        return Quit{};
       default:
         break;
     }

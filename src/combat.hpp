@@ -11,7 +11,6 @@ namespace combat {
 inline auto kill(World& world, Actor& target) {
   if (target.id == 0) {
     world.log.append(fmt::format("You have died!"));
-    g_state = std::make_unique<state::Dead>();
   } else {
     if (world.active_map().visible.at(target.pos)) {
       world.log.append(fmt::format("The {} dies!", target.name));

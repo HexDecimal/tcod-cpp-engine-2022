@@ -37,8 +37,7 @@ static void main_loop() {
   while (SDL_PollEvent(&event)) {
     if (g_state) {
       auto result = g_state->on_event(event);
-      if (dynamic_cast<state::Dead*>(g_state.get())) {
-      } else if (std::holds_alternative<std::monostate>(result)) {
+      if (std::holds_alternative<std::monostate>(result)) {
       } else if (std::holds_alternative<state::Change>(result)) {
         g_state = std::move(std::get<state::Change>(result).new_state);
       } else if (std::holds_alternative<state::Reset>(result)) {
@@ -46,9 +45,16 @@ static void main_loop() {
         g_state = std::make_unique<state::InGame>();
       } else if (std::holds_alternative<state::EndTurn>(result)) {
         g_controller.cursor = std::nullopt;
-        g_state = std::make_unique<state::InGame>();
-        update_fov(g_world->active_map(), g_world->active_player().pos);
-        enemy_turn(*g_world);
+        if (g_world->active_player().stats.hp > 0) {
+          g_state = std::make_unique<state::InGame>();
+          update_fov(g_world->active_map(), g_world->active_player().pos);
+          enemy_turn(*g_world);
+        } else {
+          g_state = std::make_unique<state::Dead>();
+        }
+      } else if (std::holds_alternative<state::Quit>(result)) {
+        if (g_world) save_world(*g_world, "save.json");
+        std::exit(EXIT_SUCCESS);
       } else {
         assert(0);
       }

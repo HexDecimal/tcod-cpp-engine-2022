@@ -22,7 +22,7 @@ MainMenu::MainMenu(int selected)
                  if (g_world) return state::Change{std::make_unique<state::InGame>()};
                  return {};
                }},
-              {"Exit", []() -> state::Result { std::exit(EXIT_SUCCESS); }},
+              {"Exit", []() -> state::Result { return Quit{}; }},
           },
           selected} {}
 }  // namespace state
