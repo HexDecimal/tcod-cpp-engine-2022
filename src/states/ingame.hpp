@@ -4,6 +4,7 @@
 #include "../actions/bump.hpp"
 #include "../actions/pickup.hpp"
 #include "../actions/use_item.hpp"
+#include "../actions/use_stairs.hpp"
 #include "../fov.hpp"
 #include "../globals.hpp"
 #include "../input_tools.hpp"
@@ -20,9 +21,6 @@ class InGame : public State {
   virtual auto on_event(SDL_Event& event) -> StateReturnType override {
     assert(g_world);
     assert(g_world->schedule.front() == 0);
-    if (auto dir = get_dir_from(event); dir) {
-      return cmd_move(*dir);
-    }
     switch (event.type) {
       case SDL_KEYDOWN: {
         switch (event.key.keysym.sym) {
@@ -31,6 +29,12 @@ class InGame : public State {
           case SDLK_i:
             return Change{std::make_unique<PickInventory>(
                 std::move(g_state), [](auto item_index) { return do_action(action::UseItem{item_index}); })};
+          case SDLK_COMMA:
+            if (event.key.keysym.mod & KMOD_SHIFT) return do_action(action::UseStairs(false));
+            break;
+          case SDLK_PERIOD:
+            if (event.key.keysym.mod & KMOD_SHIFT) return do_action(action::UseStairs(true));
+            break;
           case SDLK_F2:
             procgen::generate_level(*g_world);
             return {};
@@ -42,6 +46,9 @@ class InGame : public State {
             return Change{std::make_unique<MainMenu>()};
           default:
             break;
+        }
+        if (auto dir = get_dir_from(event); dir) {
+          return cmd_move(*dir);
         }
       } break;
       case SDL_MOUSEMOTION:

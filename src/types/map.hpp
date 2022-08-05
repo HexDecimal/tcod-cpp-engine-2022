@@ -3,6 +3,7 @@
 #include <libtcod.hpp>
 #include <unordered_map>
 
+#include "actor_id.hpp"
 #include "fixture.hpp"
 #include "item.hpp"
 #include "map_id.hpp"
@@ -32,4 +33,5 @@ struct Map {
   util::Array2D<bool> visible;
   std::unordered_multimap<Position, std::unique_ptr<Item>> items;
   std::unordered_map<Position, Fixture> fixtures;
+  std::vector<ActorID> frozen_actors;
 };

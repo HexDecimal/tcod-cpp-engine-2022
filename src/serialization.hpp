@@ -133,6 +133,7 @@ inline void to_json(json& j, const Map& map) {
   j["visible"] = map.visible;
   j["items"] = std::vector<std::pair<Position, const std::unique_ptr<Item>&>>(map.items.begin(), map.items.end());
   j["fixtures"] = map.fixtures;
+  j["frozen_actors"] = map.frozen_actors;
 }
 inline void from_json(const json& j, Map& map) {
   j.at("tiles").get_to(map.tiles);
@@ -144,6 +145,7 @@ inline void from_json(const json& j, Map& map) {
     items.pop_back();
   }
   if (j.contains("fixtures")) j.at("fixtures").get_to(map.fixtures);
+  if (j.contains("frozen_actors")) j.at("frozen_actors").get_to(map.frozen_actors);
 }
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Message, text, fg, count);
@@ -170,9 +172,15 @@ inline void from_json(const json& j, World& world) {
     j.at("maps").get_to(world.maps);
     j.at("current_map").get_to(world.current_map_id);
   }
+  for (auto& [map_id, map] : world.maps) map.id = map_id;
   std::stringstream{j.at("rng").get<std::string>()} >> world.rng;
   j.at("schedule").get_to(world.schedule);
   j.at("log").get_to(world.log);
+  if (!j.contains("active_actors")) {  // Migrate.
+    for (auto id : world.schedule) world.active_actors.emplace(id);
+  } else {
+    j.at("active_actors").get_to(world.active_actors);
+  }
 }
 
 inline auto save_world(const World& world, std::filesystem::path path) -> void {

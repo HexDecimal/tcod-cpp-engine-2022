@@ -104,6 +104,7 @@
     "*.rh": "cpp",
     "variant": "cpp",
     "cassert": "cpp",
-    "valarray": "cpp"
+    "valarray": "cpp",
+    "unordered_set": "cpp"
   }
 }

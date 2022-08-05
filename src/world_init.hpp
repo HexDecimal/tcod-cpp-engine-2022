@@ -10,9 +10,11 @@
 
 inline auto new_world() -> std::unique_ptr<World> {
   auto world = std::make_unique<World>();
+  world->rng = std::mt19937(std::rand() ^ static_cast<uint32_t>(std::time(nullptr)));
   world->log.append(
       "Welcome stranger!\nPrepare to perish in the Tombs of the Ancient Kings.", tcod::ColorRGB{212, 106, 106});
   auto& player = world->actors.emplace(0, Actor{}).first->second;
+  world->active_actors.emplace(0);
   player.name = "player";
   player.ch = '@';
   player.fg = {255, 255, 255};
@@ -32,6 +34,8 @@ inline auto new_world() -> std::unique_ptr<World> {
 
   world->schedule.emplace_back(0);
 
-  procgen::generate_level(*world);
+  auto& map = procgen::generate_level(*world);
+  activate_map(*world, map);
+  player.pos = find_fixture_by_name(map, "up stairs").value();
   return world;
 }

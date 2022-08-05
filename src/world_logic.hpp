@@ -52,7 +52,8 @@ inline auto get_nearest_actor(
     DistType max_distance = std::numeric_limits<DistType>::max()) {
   Actor* best_actor = nullptr;
   DistType best_distance = max_distance;
-  for (auto& [actor_id, actor] : world.actors) {
+  for (auto& actor_id : world.active_actors) {
+    auto& actor = world.get(actor_id);
     if (!is_valid_actor(actor)) continue;
     const DistType new_distance = distance_function(actor.pos - pos);
     if (new_distance < best_distance) {
@@ -75,16 +76,52 @@ inline auto get_nearest_actor(
 
 /// Return a pointer to an Actor at `pos` if it exists.
 inline auto actor_at(World& world, Position pos) -> Actor* {
-  for (auto& [actor_id, actor] : world.actors) {
-    if (actor.pos == pos) return &actor;
+  for (auto& actor_id : world.active_actors) {
+    if (world.get(actor_id).pos == pos) return &world.get(actor_id);
   };
   return nullptr;
+}
+
+/// Call function (Actor&) -> void on all active actors.
+template <typename WithActorFunc>
+inline auto with_active_actors(World& world, const WithActorFunc function) {
+  for (const auto& actor_id : world.active_actors) function(world.get(actor_id));
+}
+template <typename WithActorFunc>
+inline auto with_active_actors(const World& world, const WithActorFunc function) {
+  for (const auto& actor_id : world.active_actors) function(world.get(actor_id));
 }
 
 /// Call function (Actor&) -> void on any actors at `pos`.
 template <typename WithActorFunc>
 inline auto with_actors_at(World& world, Position pos, const WithActorFunc function) {
-  for (auto& [actor_id, actor] : world.actors) {
+  with_active_actors(world, [&](Actor& actor) {
     if (actor.pos == pos) function(actor);
-  };
+  });
+}
+
+inline auto freeze_map(World& world, Map& map) -> void {
+  for (auto actor_id : world.schedule) {
+    if (actor_id == 0) continue;  // Is player.
+    map.frozen_actors.emplace_back(actor_id);
+    world.active_actors.erase(actor_id);
+  }
+  world.schedule = {0};
+}
+
+inline auto find_fixture_by_name(const Map& map, std::string_view name) -> std::optional<Position> {
+  for (const auto& [pos, fixture] : map.fixtures) {
+    if (fixture.name == name) return pos;
+  }
+  return {};
+}
+
+inline auto activate_map(World& world, Map& map) -> void {
+  if (auto found = world.maps.find(world.current_map_id); found != world.maps.end()) freeze_map(world, found->second);
+  for (auto actor_id : map.frozen_actors) {
+    world.schedule.emplace_back(actor_id);
+    world.active_actors.emplace(actor_id);
+  }
+  map.frozen_actors = {};
+  world.current_map_id = map.id;
 }

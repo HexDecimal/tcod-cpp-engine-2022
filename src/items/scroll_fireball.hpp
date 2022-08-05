@@ -19,11 +19,12 @@ struct FireballScroll : public Item {
   [[nodiscard]] virtual action::Result use_item(World& world, Actor& actor) {
     auto on_pick = [&](Position target_pos) {
       auto target_ids = std::vector<ActorID>{};
-      for (auto& [target_id, target] : world.actors) {
-        if (euclidean_squared(target.pos - target_pos) < range_squared) target_ids.emplace_back(target_id);
+      for (auto& target_id : world.active_actors) {
+        if (euclidean_squared(world.get(target_id).pos - target_pos) < range_squared)
+          target_ids.emplace_back(target_id);
       }
       for (auto target_id : target_ids) {
-        auto& target = world.actors.at(target_id);
+        auto& target = world.get(target_id);
         int damage = combat::calculate_damage(world, target, atk_damage);
         world.log.append(fmt::format("The {} gets burned for {} hit points.", target.name, damage));
         combat::apply_damage(world, target, damage);

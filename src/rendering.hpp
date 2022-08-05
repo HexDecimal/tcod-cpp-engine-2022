@@ -6,6 +6,7 @@
 
 #include "constants.hpp"
 #include "globals.hpp"
+#include "world_logic.hpp"
 
 inline void render_map(tcod::Console& console, const Map& map, bool show_all = false) {
   for (int y{0}; y < map.get_height(); ++y) {
@@ -46,11 +47,11 @@ inline void render_map(tcod::Console& console, const World& world) {
     console.at(item_pos).ch = item_ch;
     console.at(item_pos).fg = item_fg;
   }
-  for (const auto& [actor_id, actor] : world.actors) {
-    if (!can_draw(actor.pos)) continue;
+  with_active_actors(world, [&](const Actor& actor) {
+    if (!can_draw(actor.pos)) return;
     console.at(actor.pos).ch = actor.ch;
     console.at(actor.pos).fg = actor.fg;
-  }
+  });
   if (g_controller.cursor) {
     auto& cursor = *g_controller.cursor;
     if (console.in_bounds(cursor) && map.visible.in_bounds(cursor)) {
@@ -102,11 +103,14 @@ inline void render_mouse_look(tcod::Console& console, const World& world) {
   const auto& map = world.active_map();
   if (!(map.visible.in_bounds(*g_controller.cursor) && map.visible.at(*g_controller.cursor))) return;
   auto cursor_desc = std::vector<std::string>{};
-  for (const auto& [actor_id, actor] : world.actors) {
+  if (const auto found_fixture = map.fixtures.find(*g_controller.cursor); found_fixture != map.fixtures.end()) {
+    cursor_desc.emplace_back(found_fixture->second.name);
+  }
+  with_active_actors(world, [&](const Actor& actor) {
     if (actor.pos == *g_controller.cursor) {
       cursor_desc.emplace_back(actor.name);
     }
-  }
+  });
   /*
   {
     const auto items_range = map.items.equal_range(*g_controller.cursor);

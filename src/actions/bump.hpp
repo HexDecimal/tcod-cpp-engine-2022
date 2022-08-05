@@ -28,7 +28,8 @@ class Bump : public Action {
     if (map.tiles.at(dest) != Tiles::floor) {
       return Failure{"That way is blocked!"};
     }
-    for (auto& [other_id, other] : world.actors) {
+    for (auto& other_id : world.active_actors) {
+      auto& other = world.get(other_id);
       if (other.pos == dest) {
         combat::attack(world, actor, other);
         return Success{};

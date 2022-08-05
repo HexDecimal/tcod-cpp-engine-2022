@@ -8,6 +8,11 @@
 #include "world_logic.hpp"
 
 namespace combat {
+inline auto destroy(World& world, Actor& target) {
+  world.active_actors.erase(target.id);
+  world.actors.erase(target.id);
+}
+
 inline auto kill(World& world, Actor& target) {
   if (target.id == 0) {
     world.log.append(fmt::format("You have died!"));
@@ -15,7 +20,7 @@ inline auto kill(World& world, Actor& target) {
     if (world.active_map().visible.at(target.pos)) {
       world.log.append(fmt::format("The {} dies!", target.name));
     }
-    world.actors.erase(target.id);
+    destroy(world, target);
   }
 }
 

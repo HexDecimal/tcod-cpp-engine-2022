@@ -20,7 +20,7 @@ class BasicAI : public Action {
     if (can_see_player) {
       auto cost = util::Array2D<int>{map.get_size()};
       with_indexes(map, [&](int x, int y) { return cost.at({x, y}) = map.tiles.at({x, y}) == Tiles::wall ? 0 : 1; });
-      for (const auto& actor_iter : world.actors) cost.at(actor_iter.second.pos) += 10;
+      for (auto actor_id : world.active_actors) cost.at(world.get(actor_id).pos) += 10;
       cost.at(player.pos) = 1;
       path_ = pf::get_astar2d_path(cost, actor.pos, player.pos);
     }
