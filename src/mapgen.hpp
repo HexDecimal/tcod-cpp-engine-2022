@@ -153,8 +153,11 @@ inline auto generate_level(World& world) -> Map& {
     if (map.tiles.at({x, y}) == Tiles::floor) floor_tiles.emplace_back(Position{x, y});
   });
 
+  const auto up_stairs_pos = pop_random(floor_tiles, world.rng);
+  map.fixtures[up_stairs_pos] = Fixture{"up stairs", '<'};
+
   auto& player = world.active_player();
-  player.pos = pop_random(floor_tiles, world.rng);
+  player.pos = up_stairs_pos;
   update_fov(map, player.pos);
 
   for (int repeats{0}; repeats < 5; ++repeats) {
@@ -194,6 +197,8 @@ inline auto generate_level(World& world) -> Map& {
     monster.ai = std::make_unique<action::BasicAI>();
     world.schedule.push_back(monster_id);
   }
+
+  map.fixtures[pop_random(floor_tiles, world.rng)] = Fixture{"down stairs", '>'};
 
   return map;
 }

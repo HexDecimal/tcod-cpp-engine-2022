@@ -7,20 +7,19 @@
 #include <fstream>
 #include <iostream>
 #include <libtcod/color.hpp>
-#include <nlohmann/json.hpp>
 
 #include "actions/ai_basic.hpp"
 #include "items/health_potion.hpp"
 #include "items/scroll_confusion.hpp"
 #include "items/scroll_fireball.hpp"
 #include "items/scroll_lightning.hpp"
+#include "json.hpp"
 #include "types/actor.hpp"
+#include "types/fixture.hpp"
 #include "types/item.hpp"
 #include "types/map.hpp"
 #include "types/messages.hpp"
 #include "types/position.hpp"
-
-using json = nlohmann::json;
 
 inline void to_json(json& j, const tcod::ColorRGB& color) { j = {color.r, color.g, color.b}; }
 inline void from_json(const json& j, tcod::ColorRGB& color) {
@@ -34,6 +33,8 @@ inline void from_json(const json& j, Position& pos) {
   j[0].get_to(pos.x);
   j[1].get_to(pos.y);
 }
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Fixture, name, ch, fg);
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(HealthPotion, count);
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfusionScroll, count, confuse_turns);
@@ -122,6 +123,7 @@ inline void to_json(json& j, const Map& map) {
   j["explored"] = map.explored;
   j["visible"] = map.visible;
   j["items"] = std::vector<std::pair<Position, const std::unique_ptr<Item>&>>(map.items.begin(), map.items.end());
+  j["fixtures"] = map.fixtures;
 }
 inline void from_json(const json& j, Map& map) {
   j.at("tiles").get_to(map.tiles);
@@ -132,6 +134,7 @@ inline void from_json(const json& j, Map& map) {
     map.items.emplace(std::move(items.back()));
     items.pop_back();
   }
+  if (j.contains("fixtures")) j.at("fixtures").get_to(map.fixtures);
 }
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Message, text, fg, count);

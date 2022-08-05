@@ -3,6 +3,7 @@
 #include <libtcod.hpp>
 #include <unordered_map>
 
+#include "fixture.hpp"
 #include "item.hpp"
 #include "ndarray.hpp"
 #include "position.hpp"
@@ -27,4 +28,5 @@ struct Map {
   util::Array2D<bool> explored;
   util::Array2D<bool> visible;
   std::unordered_multimap<Position, std::unique_ptr<Item>> items;
+  std::unordered_map<Position, Fixture> fixtures;
 };

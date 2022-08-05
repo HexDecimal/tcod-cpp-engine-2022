@@ -29,20 +29,27 @@ inline void render_map(tcod::Console& console, const Map& map, bool show_all = f
 inline void render_map(tcod::Console& console, const World& world) {
   const auto& map = world.active_map();
   render_map(console, map);
+  const auto can_draw = [&](Position map_pos) -> bool {
+    if (!map.visible.in_bounds(map_pos)) return false;
+    if (!map.visible.at(map_pos)) return false;
+    if (!console.in_bounds(map_pos)) return false;
+    return true;
+  };
+  for (const auto& [fixture_pos, fixture] : map.fixtures) {
+    if (!can_draw(fixture_pos)) continue;
+    console.at(fixture_pos).ch = fixture.ch;
+    console.at(fixture_pos).fg = fixture.fg;
+  }
   for (const auto& [item_pos, item] : map.items) {
-    if (!map.visible.in_bounds(item_pos)) continue;
-    if (!map.visible.at(item_pos)) continue;
-    if (!console.in_bounds(item_pos)) continue;
+    if (!can_draw(item_pos)) continue;
     const auto& [item_ch, item_fg] = item->get_graphic();
     console.at(item_pos).ch = item_ch;
     console.at(item_pos).fg = item_fg;
   }
   for (const auto& [actor_id, actor] : world.actors) {
-    if (!map.visible.in_bounds(actor.pos)) continue;
-    if (!map.visible.at(actor.pos)) continue;
-    if (console.in_bounds(actor.pos)) {
-      console.at(actor.pos) = {actor.ch, actor.fg, tcod::ColorRGB{0, 0, 0}};
-    }
+    if (!can_draw(actor.pos)) continue;
+    console.at(actor.pos).ch = actor.ch;
+    console.at(actor.pos).fg = actor.fg;
   }
   if (g_controller.cursor) {
     auto& cursor = *g_controller.cursor;
