@@ -118,6 +118,15 @@ inline void from_json(const json& j, util::Array2D<T>& array) {
 }
 }  // namespace util
 
+inline void to_json(json& j, const MapID& map_id) {
+  j["name"] = map_id.name;
+  j["level"] = map_id.level;
+}
+inline void from_json(const json& j, MapID& map_id) {
+  j.at("name").get_to(map_id.name);
+  j.at("level").get_to(map_id.level);
+}
+
 inline void to_json(json& j, const Map& map) {
   j["tiles"] = map.tiles;
   j["explored"] = map.explored;
@@ -148,12 +157,19 @@ inline void to_json(json& j, const World& world) {
   j["rng"] = rng.str();
   j["schedule"] = world.schedule;
   j["log"] = world.log;
+  j["current_map"] = world.current_map_id;
 }
 
 inline void from_json(const json& j, World& world) {
   j.at("actors").get_to(world.actors);
   for (auto& [actor_id, actor] : world.actors) actor.id = actor_id;
-  j.at("maps").get_to(world.maps);
+  if (!j.contains("current_map")) {  // Migrate.
+    j.at("maps").at("main").get_to(world.maps[{"caves", 0}]);
+    world.current_map_id = {"caves", 0};
+  } else {
+    j.at("maps").get_to(world.maps);
+    j.at("current_map").get_to(world.current_map_id);
+  }
   std::stringstream{j.at("rng").get<std::string>()} >> world.rng;
   j.at("schedule").get_to(world.schedule);
   j.at("log").get_to(world.log);

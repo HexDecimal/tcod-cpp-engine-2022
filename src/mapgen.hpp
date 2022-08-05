@@ -127,11 +127,13 @@ inline auto pop_random(VectorLike& list, RNG& rng) {
   return item;
 }
 
-inline auto generate_level(World& world) -> Map& {
+inline auto generate_level(World& world, int level = 1) -> Map& {
   const int WIDTH = 80;
   const int HEIGHT = 45;
   world.rng = std::mt19937(std::rand() ^ static_cast<uint32_t>(std::time(nullptr)));
-  auto& map = world.maps["main"] = Map{WIDTH, HEIGHT};
+  const auto map_id = MapID{"caves", level};
+  auto& map = world.maps[map_id] = Map{WIDTH, HEIGHT};
+  world.current_map_id = map.id = map_id;
   debug_show_map(map);
   for (size_t i{}; i < map.tiles.get_container().size(); ++i) {
     map.tiles.get_container().at(i) = (i < map.tiles.get_container().size() * 45 / 100 ? Tiles::wall : Tiles::floor);

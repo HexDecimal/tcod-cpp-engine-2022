@@ -5,6 +5,7 @@
 
 #include "fixture.hpp"
 #include "item.hpp"
+#include "map_id.hpp"
 #include "ndarray.hpp"
 #include "position.hpp"
 
@@ -24,6 +25,8 @@ struct Map {
   }
   auto get_width() const noexcept -> int { return get_size().at(0); }
   auto get_height() const noexcept -> int { return get_size().at(1); }
+
+  MapID id;
   util::Array2D<Tiles> tiles;
   util::Array2D<bool> explored;
   util::Array2D<bool> visible;
