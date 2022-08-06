@@ -1,4 +1,6 @@
 #pragma once
+#include <fmt/core.h>>
+
 #include "../globals.hpp"
 #include "../world_init.hpp"
 #include "../xp.hpp"
@@ -26,7 +28,11 @@ class LevelUp : public Menu {
                    g_world->active_player().stats.defense += 1;
                    return level_up_done();
                  }}},
-            selected} {}
+            selected} {
+    assert(g_world);
+    g_world->log.append(fmt::format(
+        "Your battle skills grow stronger! You reached level {}.", g_world->active_player().stats.level + 1));
+  }
 
  private:
   static auto level_up_done() -> StateReturnType {
