@@ -7,6 +7,7 @@
 #include "constants.hpp"
 #include "globals.hpp"
 #include "world_logic.hpp"
+#include "xp.hpp"
 
 inline void render_map(tcod::Console& console, const Map& map, bool show_all = false) {
   for (int y{0}; y < map.get_height(); ++y) {
@@ -143,6 +144,15 @@ inline void render_gui(tcod::Console& console, const World& world) {
       constants::HP_BAR_BACK);
   tcod::print_rect(
       console, {hp_x, hp_y, 20, 1}, fmt::format(" HP: {}/{}", player.stats.hp, player.stats.max_hp), text_color, {});
+  draw_bar(
+      console,
+      hp_x,
+      hp_y + 1,
+      20,
+      static_cast<float>(player.stats.xp) / next_level_xp(player.stats.level),
+      tcod::ColorRGB{TCODColor::lightViolet},
+      tcod::ColorRGB{TCODColor::darkerViolet});
+  tcod::print_rect(console, {hp_x, hp_y + 1, 20, 1}, fmt::format(" XP: {}", player.stats.xp), text_color, {});
   render_log(console, world);
   render_mouse_look(console, world);
 }

@@ -17,8 +17,9 @@ inline auto kill(World& world, Actor& target) {
   if (target.id == 0) {
     world.log.append(fmt::format("You have died!"));
   } else {
+    world.active_player().stats.xp += target.stats.xp;
     if (world.active_map().visible.at(target.pos)) {
-      world.log.append(fmt::format("The {} dies!", target.name));
+      world.log.append(fmt::format("The {} dies! You gain {} xp.", target.name, target.stats.xp));
     }
     destroy(world, target);
   }

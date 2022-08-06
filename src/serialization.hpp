@@ -80,7 +80,6 @@ inline void from_json(const json& j, std::unique_ptr<Item>& item) {
 }
 
 namespace action {
-
 inline void to_json(json& j, const std::unique_ptr<Action>& item) {
   if (!item) {
     j = nullptr;
@@ -103,7 +102,27 @@ inline void from_json(const json& j, std::unique_ptr<Action>& item) {
 }
 }  // namespace action
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Stats, max_hp, hp, attack, defense, inventory, confused_turns);
+inline void to_json(json& j, const Stats& stats) {
+  j["max_hp"] = stats.max_hp;
+  j["hp"] = stats.hp;
+  j["attack"] = stats.attack;
+  j["defense"] = stats.defense;
+  j["level"] = stats.level;
+  j["xp"] = stats.xp;
+  j["inventory"] = stats.inventory;
+  j["confused_turns"] = stats.confused_turns;
+}
+inline void from_json(const json& j, Stats& stats) {
+  j.at("max_hp").get_to(stats.max_hp);
+  j.at("hp").get_to(stats.hp);
+  j.at("attack").get_to(stats.attack);
+  j.at("defense").get_to(stats.defense);
+  if (j.contains("level")) j.at("level").get_to(stats.level);  // Migration.
+  if (j.contains("xp")) j.at("xp").get_to(stats.xp);  // Migration.
+  j.at("inventory").get_to(stats.inventory);
+  j.at("confused_turns").get_to(stats.confused_turns);
+}
+
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Actor, pos, name, ch, fg, stats, ai);
 
 namespace util {

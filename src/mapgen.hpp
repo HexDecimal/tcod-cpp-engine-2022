@@ -185,6 +185,7 @@ inline auto generate_level(World& world, int level = 1) -> Map& {
     monster.fg = {63, 127, 63};
     monster.stats.max_hp = monster.stats.hp = 10;
     monster.stats.attack = 3;
+    monster.stats.xp = 35;
     monster.ai = std::make_unique<action::BasicAI>();
     world.schedule.push_back(monster_id);
   }
@@ -197,6 +198,7 @@ inline auto generate_level(World& world, int level = 1) -> Map& {
     monster.stats.max_hp = monster.stats.hp = 16;
     monster.stats.defense = 1;
     monster.stats.attack = 4;
+    monster.stats.xp = 100;
     monster.ai = std::make_unique<action::BasicAI>();
     world.schedule.push_back(monster_id);
   }
