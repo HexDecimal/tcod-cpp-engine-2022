@@ -17,6 +17,7 @@
 #include "rendering.hpp"
 #include "serialization.hpp"
 #include "states/ingame.hpp"
+#include "states/levelup.hpp"
 #include "states/main_menu.hpp"
 #include "world_init.hpp"
 
@@ -54,6 +55,9 @@ static void main_loop() {
           g_state = std::make_unique<state::InGame>();
           update_fov(g_world->active_map(), g_world->active_player().pos);
           enemy_turn(*g_world);
+          if (g_world->active_player().stats.xp >= next_level_xp(g_world->active_player().stats.level)) {
+            g_state = std::make_unique<state::LevelUp>();
+          }
         } else {
           g_state = std::make_unique<state::Dead>();
         }
