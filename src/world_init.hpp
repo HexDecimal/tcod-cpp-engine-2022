@@ -10,7 +10,7 @@
 
 inline auto new_world() -> std::unique_ptr<World> {
   auto world = std::make_unique<World>();
-  world->rng = std::mt19937(std::rand() ^ static_cast<uint32_t>(std::time(nullptr)));
+  world->rng = std::mt19937(std::random_device{}());
   world->log.append(
       "Welcome stranger!\nPrepare to perish in the Tombs of the Ancient Kings.", tcod::ColorRGB{212, 106, 106});
   auto& player = world->actors.emplace(0, Actor{}).first->second;
