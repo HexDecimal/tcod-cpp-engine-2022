@@ -13,4 +13,7 @@ constexpr auto WHITE = tcod::ColorRGB{255, 255, 255};
 // https://paletton.com/#uid=1000u0kllllaFw0g0qFqFg0w0aF
 constexpr auto HP_BAR_BACK = tcod::ColorRGB{85, 0, 0};
 constexpr auto HP_BAR_FILL = tcod::ColorRGB{128, 21, 21};
+// https://paletton.com/#uid=14H0u0knjpZdTAzj6tnqPlGv4gS
+constexpr auto XP_BAR_BACK = tcod::ColorRGB{61, 7, 90};
+constexpr auto XP_BAR_FILL = tcod::ColorRGB{83, 24, 115};
 }  // namespace constants

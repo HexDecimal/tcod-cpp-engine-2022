@@ -150,8 +150,8 @@ inline void render_gui(tcod::Console& console, const World& world) {
       hp_y + 1,
       20,
       static_cast<float>(player.stats.xp) / next_level_xp(player.stats.level),
-      tcod::ColorRGB{TCODColor::lightViolet},
-      tcod::ColorRGB{TCODColor::darkerViolet});
+      constants::XP_BAR_FILL,
+      constants::XP_BAR_BACK);
   tcod::print_rect(console, {hp_x, hp_y + 1, 20, 1}, fmt::format(" XP: {}", player.stats.xp), text_color, {});
   render_log(console, world);
   render_mouse_look(console, world);
