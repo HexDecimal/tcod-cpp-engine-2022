@@ -93,10 +93,14 @@ inline void draw_bar(
     int width,
     float filled,
     const tcod::ColorRGB fill_color,
-    const tcod::ColorRGB back_color) {
+    const tcod::ColorRGB back_color,
+    std::string_view text = "",
+    const tcod::ColorRGB text_color = constants::WHITE,
+    TCOD_alignment_t alignment = TCOD_LEFT) {
   const auto bar_width = std::clamp(static_cast<int>(std::round(width * filled)), 0, width);
   tcod::draw_rect(console, {x, y, width, 1}, 0, {}, back_color);
   tcod::draw_rect(console, {x, y, bar_width, 1}, 0, {}, fill_color);
+  if (text.size()) tcod::print_rect(console, {x, y, width, 1}, text, text_color, {}, alignment);
 }
 
 inline void render_mouse_look(tcod::Console& console, const World& world) {
@@ -130,7 +134,6 @@ inline void render_mouse_look(tcod::Console& console, const World& world) {
 
 inline void render_gui(tcod::Console& console, const World& world) {
   const auto& player = world.active_player();
-  const auto text_color = constants::WHITE;
   const int hp_x = 1;
   const int hp_y = constants::MAP_HEIGHT + 1;
 
@@ -141,9 +144,8 @@ inline void render_gui(tcod::Console& console, const World& world) {
       20,
       static_cast<float>(player.stats.hp) / player.stats.max_hp,
       constants::HP_BAR_FILL,
-      constants::HP_BAR_BACK);
-  tcod::print_rect(
-      console, {hp_x, hp_y, 20, 1}, fmt::format(" HP: {}/{}", player.stats.hp, player.stats.max_hp), text_color, {});
+      constants::HP_BAR_BACK,
+      fmt::format(" HP: {}/{}", player.stats.hp, player.stats.max_hp));
   draw_bar(
       console,
       hp_x,
@@ -151,8 +153,8 @@ inline void render_gui(tcod::Console& console, const World& world) {
       20,
       static_cast<float>(player.stats.xp) / next_level_xp(player.stats.level),
       constants::XP_BAR_FILL,
-      constants::XP_BAR_BACK);
-  tcod::print_rect(console, {hp_x, hp_y + 1, 20, 1}, fmt::format(" XP: {}", player.stats.xp), text_color, {});
+      constants::XP_BAR_BACK,
+      fmt::format(" XP: {}", player.stats.xp));
   render_log(console, world);
   render_mouse_look(console, world);
 }
