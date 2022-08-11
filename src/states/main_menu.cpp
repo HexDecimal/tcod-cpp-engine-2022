@@ -12,18 +12,20 @@ namespace state {
 MainMenu::MainMenu(int selected)
     : Menu{
           MenuItems{
-              {"New Game",
+              {"[N] New Game",
                []() -> state::Result {
                  g_world = new_world();
                  return state::Change{std::make_unique<state::InGame>()};
-               }},
-              {"Continue",
+               },
+               SDLK_n},
+              {"[C] Continue",
                []() -> state::Result {
                  if (g_world) return state::Change{std::make_unique<state::InGame>()};
                  return {};
-               }},
+               },
+               SDLK_c},
 #ifndef __EMSCRIPTEN__
-              {"Exit", []() -> state::Result { return Quit{}; }},
+              {"[Q] Exit", []() -> state::Result { return Quit{}; }, SDLK_q},
 #endif  // __EMSCRIPTEN__
           },
           selected} {

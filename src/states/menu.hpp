@@ -10,8 +10,9 @@ namespace state {
 class Menu : public State {
  public:
   struct Item {
-    std::string name;
-    std::function<StateReturnType()> on_pick;
+    std::string name;  // The displayed text of this item.
+    std::function<StateReturnType()> on_pick;  // The callback for when this item is picked.
+    int key = 0;  // The SDL_KeyCode to use as the hotkey for this item.
   };
   using MenuItems = std::vector<Item>;
   explicit Menu(MenuItems items = {}, int selected = 0) : items_{std::move(items)}, selected_{selected} {}
@@ -37,6 +38,12 @@ class Menu : public State {
             break;
           }
           default:
+            for (size_t i{0}; i < items_.size(); ++i) {
+              if (items_.at(i).key && items_.at(i).key == event.key.keysym.sym) {
+                selected_ = i;
+                return get_selected_item()->on_pick();
+              }
+            }
             break;
         }
         break;
