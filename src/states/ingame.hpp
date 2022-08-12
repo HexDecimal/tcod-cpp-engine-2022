@@ -8,7 +8,7 @@
 #include "../fov.hpp"
 #include "../globals.hpp"
 #include "../input_tools.hpp"
-#include "../mapgen.hpp"
+#include "../procgen/caves.hpp"
 #include "../serialization.hpp"
 #include "../types/state.hpp"
 #include "../world_logic.hpp"

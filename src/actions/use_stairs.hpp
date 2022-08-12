@@ -1,5 +1,5 @@
 #pragma once
-#include "../mapgen.hpp"
+#include "../procgen/caves.hpp"
 #include "../types/action.hpp"
 #include "../types/actor.hpp"
 #include "../types/world.hpp"

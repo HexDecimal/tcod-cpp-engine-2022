@@ -4,7 +4,7 @@
 #include "items/scroll_confusion.hpp"
 #include "items/scroll_fireball.hpp"
 #include "items/scroll_lightning.hpp"
-#include "mapgen.hpp"
+#include "procgen/caves.hpp"
 #include "types/actor.hpp"
 #include "types/world.hpp"
 
