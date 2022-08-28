@@ -20,7 +20,7 @@ class InGame : public State {
  public:
   virtual auto on_event(SDL_Event& event) -> StateReturnType override {
     assert(g_world);
-    assert(g_world->schedule.front() == 0);
+    assert(g_world->schedule.front() == ActorID{0});
     switch (event.type) {
       case SDL_KEYDOWN: {
         switch (event.key.keysym.sym) {

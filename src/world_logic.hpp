@@ -18,15 +18,16 @@ inline auto new_actor(World& world) {
 }
 
 inline auto enemy_turn(World& world) -> void {
-  assert(world.schedule.front() == 0);
+  assert(world.schedule.front() == ActorID{0});
   world.schedule.push_back(world.schedule.front());
   world.schedule.pop_front();
-  while (world.schedule.front() != 0 && world.actors.find(0) != world.actors.end()) {
+  while (world.schedule.front() != ActorID{0} && world.actors.find(ActorID{0}) != world.actors.end()) {
     auto actor_id = world.schedule.front();
     world.schedule.pop_front();
     auto actor_it = world.actors.find(actor_id);
     if (actor_it == world.actors.end()) {
-      fmt::print("Dropped missing actor {:0X} from schedule.\n", actor_id);
+      fmt::print(
+          "Dropped missing actor {:0X} from schedule.\n", static_cast<std::underlying_type_t<ActorID>>(actor_id));
       continue;
     }
     auto& actor = actor_it->second;
@@ -102,11 +103,11 @@ inline auto with_actors_at(World& world, Position pos, const WithActorFunc funct
 
 inline auto freeze_map(World& world, Map& map) -> void {
   for (auto actor_id : world.schedule) {
-    if (actor_id == 0) continue;  // Is player.
+    if (actor_id == ActorID{0}) continue;  // Is player.
     map.frozen_actors.emplace_back(actor_id);
     world.active_actors.erase(actor_id);
   }
-  world.schedule = {0};
+  world.schedule = {ActorID{0}};
 }
 
 inline auto find_fixture_by_name(const Map& map, std::string_view name) -> std::optional<Position> {

@@ -1,2 +1,2 @@
 #pragma once
-using ActorID = uint32_t;
+enum class ActorID : uint32_t {};
