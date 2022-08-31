@@ -1,5 +1,5 @@
 #pragma once
-#include <fmt/core.h>>
+#include <fmt/core.h>
 
 #include "../globals.hpp"
 #include "../world_init.hpp"
