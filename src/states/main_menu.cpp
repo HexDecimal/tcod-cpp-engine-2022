@@ -1,4 +1,3 @@
-#pragma once
 #include "main_menu.hpp"
 
 #include <memory>
