@@ -4,24 +4,16 @@
   "version-semver": "0.0.0",
   "dependencies": [
     "fmt",
-    "glad",
-    "lodepng-c",
-    "nlohmann-json",
-    "sdl2",
     {
-      "name": "sdl2",
+      "name": "libtcod",
       "default-features": false,
       "features": [
-        "x11"
-      ],
-      "platform": "linux"
+        "png",
+        "sdl"
+      ]
     },
-    "stb",
-    "utf8proc",
-    {
-      "name": "vcpkg-cmake",
-      "host": true
-    },
-    "zlib"
+    "nlohmann-json",
+    "sdl2",
+    "stb"
   ]
 }

@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include <libtcod/color.hpp>
+#include <sstream>
 
 #include "actions/ai_basic.hpp"
 #include "items/health_potion.hpp"

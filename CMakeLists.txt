@@ -46,8 +46,15 @@ if (EMSCRIPTEN)
     )
 endif()
 
-set(BUILD_SHARED_LIBS ${WIN32})  # Builds libtcod has a shared library.
-add_subdirectory("libtcod")  # This will error if you haven't initialized libtcod the submodule!
+# I might switch between the libtcod submodule and the stable Vcpkg version depending on my current focus.
+set(USE_LIBTCOD_SUBMODULE OFF CACHE BOOL "Build libtcod from the submodule instead of from Vcpkg.")
+if(USE_LIBTCOD_SUBMODULE)
+    set(CMAKE_DISABLE_FIND_PACKAGE_ZLIB ON)  # Not using zlib features.
+    set(BUILD_SHARED_LIBS ${WIN32})  # Builds libtcod as a shared library.
+    add_subdirectory("libtcod")  # This will error if you haven't initialized libtcod the submodule!
+else()
+    find_package(libtcod CONFIG REQUIRED)  # Get from Vcpkg.
+endif()
 
 find_package(fmt CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
