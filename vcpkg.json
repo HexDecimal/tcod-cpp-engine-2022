@@ -12,6 +12,7 @@
         "sdl"
       ]
     },
+    "ms-gsl",
     "nlohmann-json",
     "sdl2",
     "stb"

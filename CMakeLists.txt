@@ -58,4 +58,13 @@ endif()
 
 find_package(fmt CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2::SDL2main libtcod::libtcod fmt::fmt)
+find_package(Microsoft.GSL CONFIG REQUIRED)
+target_link_libraries(
+    ${PROJECT_NAME}
+    PRIVATE
+        SDL2::SDL2
+        SDL2::SDL2main
+        libtcod::libtcod
+        fmt::fmt
+        Microsoft.GSL::GSL
+)

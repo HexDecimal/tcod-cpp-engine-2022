@@ -2,6 +2,7 @@
 
 #include <fmt/core.h>
 
+#include <gsl/gsl>
 #include <random>
 
 #include "../actions/ai_basic.hpp"
@@ -109,7 +110,7 @@ inline auto fill_holes(Map& map) -> void {
     label_sizes.emplace_back(std::count(labels.begin(), labels.end(), i + 1));
   }
   const auto biggest_label =
-      static_cast<int>(std::max_element(label_sizes.begin(), label_sizes.end()) - label_sizes.begin()) + 1;
+      gsl::narrow<int>(std::max_element(label_sizes.begin(), label_sizes.end()) - label_sizes.begin()) + 1;
   with_indexes(labels, [&, &labels = labels](int x, int y) {
     if (labels.at({x, y}) && labels.at({x, y}) != biggest_label) {
       map.tiles.at({x, y}) = Tiles::wall;
