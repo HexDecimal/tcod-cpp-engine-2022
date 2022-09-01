@@ -71,7 +71,6 @@ inline void render_log(tcod::Console& console, const World& world) {
   int y = log_console.get_height();
   for (auto it = world.log.messages.crbegin(); it != world.log.messages.crend(); ++it) {
     const auto& msg = *it;
-    const auto last_y = y;
     auto print_msg = [&](std::string_view text, const tcod::ColorRGB& fg) {
       y -= tcod::get_height_rect(log_console.get_width(), text);
       tcod::print_rect(log_console, {0, y, 0, log_console.get_width()}, text, fg, {});
@@ -170,9 +169,9 @@ inline void main_redraw() {
   g_context.present(g_console);
 }
 
-inline auto debug_show_map(const Map& map) {
-  static int n = 0;
+inline auto debug_show_map([[maybe_unused]] const Map& map) -> void {
 #ifndef NDEBUG
+  static int n = 0;
   render_map(g_console, map, true);
   g_context.present(g_console);
   SDL_Delay(100);
