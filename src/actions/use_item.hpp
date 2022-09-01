@@ -2,6 +2,7 @@
 #include <fmt/core.h>
 
 #include <cassert>
+#include <gsl/gsl>
 
 #include "../combat.hpp"
 #include "../states/pick_tile.hpp"
@@ -13,7 +14,7 @@ class UseItem : public Action {
   UseItem() = default;
   UseItem(int item_index) : item_index_{item_index} { assert(item_index_ >= 0); }
   [[nodiscard]] virtual Result perform(World& world, Actor& actor) override {
-    if (item_index_ >= actor.stats.inventory.size()) {
+    if (item_index_ >= gsl::narrow<decltype(item_index_)>(actor.stats.inventory.size())) {
       return Failure{"You don't have that item."};
     }
     auto& item = actor.stats.inventory.at(item_index_);

@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <gsl/gsl>
 #include <vector>
 
 #include "../constants.hpp"
@@ -41,7 +42,7 @@ class Menu : public State {
           default:
             for (size_t i{0}; i < items_.size(); ++i) {
               if (items_.at(i).key && items_.at(i).key == event.key.keysym.sym) {
-                selected_ = i;
+                selected_ = gsl::narrow<int>(i);
                 return get_selected_item()->on_pick();
               }
             }

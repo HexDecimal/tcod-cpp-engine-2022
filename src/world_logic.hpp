@@ -1,6 +1,8 @@
 #pragma once
 #include <fmt/core.h>
 
+#include <gsl/gsl>
+
 #include "distance.hpp"
 #include "types/actor.hpp"
 #include "types/world.hpp"
@@ -8,7 +10,8 @@
 /// Create a unique actor and return the mapping iterator to that actor.
 inline auto new_actor(World& world) {
   while (true) {
-    auto new_id = ActorID{world.rng()};
+    // RNG's need to be narrowed on some implementations.
+    auto new_id = ActorID{gsl::narrow<std::underlying_type_t<ActorID>>(world.rng())};
     auto [iterator, success] = world.actors.insert({new_id, Actor{}});
     if (success) {
       iterator->second.id = new_id;

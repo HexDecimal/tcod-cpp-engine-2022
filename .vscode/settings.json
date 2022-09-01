@@ -112,6 +112,7 @@
     "any": "cpp",
     "ranges": "cpp",
     "span": "cpp",
-    "pointers": "cpp"
+    "pointers": "cpp",
+    "assert": "cpp"
   }
 }
