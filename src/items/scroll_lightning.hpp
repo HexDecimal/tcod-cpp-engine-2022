@@ -15,7 +15,7 @@ struct LightningScroll : public Item {
   [[nodiscard]] virtual std::tuple<int, tcod::ColorRGB> get_graphic() const override {
     return {'#', tcod::ColorRGB{255, 255, 63}};
   }
-  [[nodiscard]] virtual action::Result use_item(World& world, Actor& actor) {
+  [[nodiscard]] virtual action::Result use_item(World& world, Actor& actor) override {
     Map& map = world.active_map();
     const auto is_not_player_and_visible = [&](const Actor& other) {
       return other.id != actor.id && map.visible.at(other.pos);

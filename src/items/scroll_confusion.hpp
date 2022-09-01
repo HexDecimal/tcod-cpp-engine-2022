@@ -15,7 +15,7 @@ struct ConfusionScroll : public Item {
   [[nodiscard]] virtual std::tuple<int, tcod::ColorRGB> get_graphic() const override {
     return {'#', tcod::ColorRGB{207, 63, 255}};
   }
-  [[nodiscard]] virtual action::Result use_item(World& world, Actor& actor) {
+  [[nodiscard]] virtual action::Result use_item(World& world, Actor& actor) override {
     auto on_pick = [&](Position target_pos) -> state::Result {
       const auto& map = world.active_map();
       if (!map.visible.in_bounds(target_pos) || !map.visible.at(target_pos)) {

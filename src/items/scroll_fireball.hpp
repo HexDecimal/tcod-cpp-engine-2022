@@ -16,7 +16,7 @@ struct FireballScroll : public Item {
   [[nodiscard]] virtual std::tuple<int, tcod::ColorRGB> get_graphic() const override {
     return {'#', tcod::ColorRGB{255, 63, 63}};
   }
-  [[nodiscard]] virtual action::Result use_item(World& world, Actor& actor) {
+  [[nodiscard]] virtual action::Result use_item(World& world, Actor& actor) override {
     auto on_pick = [&](Position target_pos) {
       auto target_ids = std::vector<ActorID>{};
       for (auto& target_id : world.active_actors) {
