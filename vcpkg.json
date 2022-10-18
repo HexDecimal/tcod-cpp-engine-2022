@@ -9,7 +9,8 @@
       "default-features": false,
       "features": [
         "png",
-        "sdl"
+        "sdl",
+        "unicode"
       ]
     },
     "ms-gsl",
