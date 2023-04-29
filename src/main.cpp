@@ -83,6 +83,9 @@ extern "C" const char* EMSCRIPTEN_KEEPALIVE on_page_unload(int, const void*, voi
 
 // Main initialization code.
 void main_init(int argc = 0, char** argv = nullptr) {
+#ifndef __EMSCRIPTEN__
+  std::atexit(SDL_Quit);
+#endif
   auto params = TCOD_ContextParams{};
   params.tcod_version = TCOD_COMPILEDVERSION;
   params.argc = argc;
